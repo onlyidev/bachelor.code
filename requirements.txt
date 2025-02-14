@@ -1,3 +1,4 @@
 mlflow
 scikit-learn
 python-dotenv
+dvc_s3
