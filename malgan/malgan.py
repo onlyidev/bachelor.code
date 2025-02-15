@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import numpy as np
 from keras import Input, Model
-from keras.api.layers import Dense, Activation, Concatenate
+from keras.layers import Dense, Activation, Concatenate
 import mlflow
 
 #%% Constants
@@ -115,12 +115,14 @@ def getTestData(generator, malware, benign, noise_dim=NOISE_DIM):
 #%% Training MalGAN
 def train(generator, blackBox, substituteDetector, malGAN, malware, benign, epochs=5, noise_dim=NOISE_DIM):
     mlflow.keras.autolog()
+    mlflow.log_param("epochs", epochs)
 
     benign_batch_idx = 0
     malware_batch_count = malware.shape[0]
     benign_batch_count = benign.shape[0]
 
     for epoch in range(epochs):
+        print(f"Starting epoch {epoch}/{epochs}")
         sd_losses = []
         gen_losses = []
         for malware_batch_idx in range(malware_batch_count):

@@ -2,7 +2,7 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import classification_report
-import rf_classifier
+# import rf_classifier
 import malgan
 import mlflow
 
@@ -67,20 +67,25 @@ MalGAN_benign = MalGAN_benign[: (MalGAN_benign.shape[0] // BATCH_SIZE) * BATCH_S
 
 #%% Get RF classifier
 
-blackBox, bb_cr = rf_classifier.get_black_box(bb_malware, bb_benign)
-print(bb_cr)
+# blackBox, bb_cr = rf_classifier.get_black_box(bb_malware, bb_benign)
+# print(bb_cr)
+logged_model = 'runs:/043b170ccf6c402e9fc7851e6725b99d/model'
+blackBox = mlflow.pyfunc.load_model(logged_model)
 
 #%% Training MalGAN
 generator, substituteDetector, gan = malgan.getMalGAN(num_features)
 experiment = mlflow.get_experiment_by_name("MalGAN Adversarial Attack Generator")
 with mlflow.start_run(experiment_id=experiment.experiment_id, log_system_metrics=True):
-    malgan.train(generator, blackBox, substituteDetector, gan, MalGAN_malware, MalGAN_benign)
+    malgan.train(generator, blackBox, substituteDetector, gan, MalGAN_malware, MalGAN_benign, epochs=20)
     
     test_samples, test_labels = malgan.getTestData(generator, test_malware, test_benign)
     y_pred = blackBox.predict(test_samples)
     report = classification_report(y_pred, test_labels)
     print(report)
-        
+    
     signature = mlflow.models.infer_signature(test_samples, y_pred)
     mlflow.keras.log_model(generator, "model/gen", registered_model_name="MALGAN_ADV_GENERATOR", signature=signature)
     
+#%% TF test
+import tensorflow as tf
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
