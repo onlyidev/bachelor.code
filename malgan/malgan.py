@@ -11,7 +11,7 @@ load_dotenv()
 NUM_FEATURES=69
 BATCH_SIZE=64
 NOISE_DIM=NUM_FEATURES
-DEBUG=int(os.getenv("DEBUG"))
+DEBUG=0
 
 #%%
 def Generator(input_shape=NUM_FEATURES, noise_shape=NOISE_DIM):
