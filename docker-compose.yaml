@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  gym:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    runtime: nvidia
+    tty: true
+    container_name: gym_tf
+    env_file: .env
+    volumes:
+      - $HOME/~.aws:/root/.aws /root/.aws:ro
+    command:
+      - bash
+      - -c
+      - >
+        git clone https://github.com/onlyidev/bachelor.code.git;
+        tail -F anything
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
