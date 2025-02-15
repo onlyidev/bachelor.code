@@ -76,7 +76,7 @@ blackBox = mlflow.pyfunc.load_model(logged_model)
 generator, substituteDetector, gan = malgan.getMalGAN(num_features)
 experiment = mlflow.get_experiment_by_name("MalGAN Adversarial Attack Generator")
 with mlflow.start_run(experiment_id=experiment.experiment_id, log_system_metrics=True):
-    malgan.train(generator, blackBox, substituteDetector, gan, MalGAN_malware, MalGAN_benign, epochs=20)
+    malgan.train(generator, blackBox, substituteDetector, gan, MalGAN_malware, MalGAN_benign, epochs=10)
     
     test_samples, test_labels = malgan.getTestData(generator, test_malware, test_benign)
     y_pred = blackBox.predict(test_samples)
