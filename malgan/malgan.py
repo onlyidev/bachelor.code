@@ -5,7 +5,6 @@ import numpy as np
 from keras import Input, Model
 from keras.layers import Dense, Activation, Concatenate
 import mlflow
-import keras.backend as K
 
 #%% Constants
 load_dotenv()
@@ -59,50 +58,19 @@ if DEBUG == 1:
     substituteDetector = SubstituteDetector()
     print(substituteDetector.summary())
 
-# Custom loss function
-def malgan_loss(substitute_detector_output, generated_samples, original_malware, alpha=10, beta=1):
-    """
-    Custom loss function for MalGAN.
-
-    Args:
-        substitute_detector_output: Output of the substitute detector for the generated samples.
-        generated_samples: The generated adversarial samples.
-        black_box_model: The black box model.
-        original_malware: The original malware samples used to generate the adversarial samples.
-        alpha: Weight for the binary cross-entropy loss.
-        beta: Weight for the similarity loss (MAE).
-
-    Returns:
-        Total loss.
-    """
-
-    # Binary cross-entropy loss: Encourage the substitute detector to classify generated samples as benign (0)
-    bce_loss = K.mean(K.binary_crossentropy(K.zeros_like(substitute_detector_output), substitute_detector_output))
-
-    # Similarity loss: Mean Absolute Error (MAE) between generated samples and original malware
-    mae_loss = K.mean(K.abs(generated_samples - original_malware))
-
-    total_loss = alpha * bce_loss + beta * mae_loss
-    return total_loss
-
 #%% MalGAN model
 def MalGAN(generator, substituteDetector, input_shape=NUM_FEATURES, noise_shape=NOISE_DIM):
     for layer in substituteDetector.layers:
         layer.trainable = False
 
-    input_malware = Input(shape=[input_shape])
-    input_noise = Input(shape=[noise_shape])
+    input = Input(shape=[input_shape])
+    noise = Input(shape=[noise_shape])
 
-    generated_samples = generator([input_malware, input_noise])
-    substitute_detector_output = substituteDetector(generated_samples)
+    x = generator([input, noise])
+    output = substituteDetector(x)
 
-    # Use the custom loss function
-    malware_input = Input(shape=(input_shape,))
-    loss = malgan_loss(substitute_detector_output, generated_samples, malware_input)
-
-    model = Model([input_malware, input_noise, malware_input], substitute_detector_output)
-    model.add_loss(loss)
-    model.compile(optimizer='adam')
+    model = Model([input, noise], [output, x])
+    model.compile(optimizer='adam', loss=['binary_crossentropy', 'mae'], loss_weights=[1, 100])
     return model
 
 if DEBUG == 1:
@@ -174,3 +142,4 @@ def train(generator, blackBox, substituteDetector, malGAN, malware, benign, epoc
         mlflow.log_metric("avg_subst_loss", np.average(sd_losses), step=epoch)
         mlflow.log_metric("avg_gen_loss", np.average(gen_losses), step=epoch)
         print(epoch, subsitituteDetector_loss, generator_loss)
+        
