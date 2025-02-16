@@ -70,7 +70,7 @@ def MalGAN(generator, substituteDetector, input_shape=NUM_FEATURES, noise_shape=
     output = substituteDetector(x)
 
     model = Model([input, noise], [output, x])
-    model.compile(optimizer='adam', loss=['binary_crossentropy', 'mae'], loss_weights=[1, 100])
+    model.compile(optimizer='adam', loss='binary_crossentropy')
     return model
 
 if DEBUG == 1:
