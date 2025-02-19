@@ -6,6 +6,7 @@ import numpy as np
 
 import torch
 from sklearn.metrics import confusion_matrix, roc_auc_score
+import mlflow
 
 TensorOrFloat = Union[torch.Tensor, float]
 TorchOrNumpy = Union[torch.Tensor, np.ndarray]
@@ -50,6 +51,7 @@ def _export_results(model: 'MalGAN', valid_loss: TensorOrFloat, test_loss: Tenso
                    "%.15f,%.15f,%.3f" % (valid_loss, test_loss, avg_num_bits_changed)]
 
         auc = roc_auc_score(y_actual, y_prob)
+        mlflow.log_metric("AUC", auc)
         results.append("%.8f" % auc)
 
         # Calculate the detection rate on unmodified malware
@@ -62,5 +64,6 @@ def _export_results(model: 'MalGAN', valid_loss: TensorOrFloat, test_loss: Tenso
             results.append("%.8f" % rate)
         results = ",".join(results)
         f_out.write(results)
-
-        return "".join([header, results])
+        
+    mlflow.log_artifact(results_file)
+    return "".join([header, results])

@@ -1,0 +1,17 @@
+services:
+  gym:
+    image: pytorch/pytorch
+    runtime: nvidia
+    tty: true
+    container_name: gym_torch
+    env_file: .env
+    working_dir: /app
+    volumes:
+      - .:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

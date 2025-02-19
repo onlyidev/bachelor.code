@@ -35,6 +35,8 @@ from .detector import BlackBoxDetector
 from .discriminator import Discriminator
 from .generator import Generator
 
+import mlflow
+
 ListOrInt = Union[List[int], int]
 PathOrStr = Union[str, Path]
 TensorTuple = Tuple[Tensor, Tensor]
@@ -88,10 +90,10 @@ class _DataGroup:  # pylint: disable=too-few-public-methods
 
         :param batch_size: Batch size for training
         """
-        self.train = DataLoader(self.train, batch_size=batch_size, shuffle=True, pin_memory=True)
+        self.train = DataLoader(self.train, batch_size=batch_size, shuffle=False, pin_memory=False)
         if self.valid:
-            self.valid = DataLoader(self.valid, batch_size=batch_size, pin_memory=True)
-        self.test = DataLoader(self.test, batch_size=batch_size, pin_memory=True)
+            self.valid = DataLoader(self.valid, batch_size=batch_size, pin_memory=False)
+        self.test = DataLoader(self.test, batch_size=batch_size, pin_memory=False)
         self.is_loaders = True
 
 
@@ -178,7 +180,7 @@ class MalGAN(nn.Module):
 
             # Order must be train, validation, test
             lengths = [len(dataset) - valid_len - test_len, valid_len, test_len]
-            return _DataGroup(*torch.utils.data.random_split(dataset, lengths))
+            return _DataGroup(*torch.utils.data.random_split(dataset, lengths,generator=torch.Generator(device="cuda")))
 
         # Split between train, test, and validation then construct the loaders
         self._mal_data = split_train_valid_test(mal_data, is_benign=False)
@@ -239,6 +241,9 @@ class MalGAN(nn.Module):
 
         d_optimizer = optim.Adam(self._discrim.parameters(), lr=1e-5)
         g_optimizer = optim.Adam(self._gen.parameters(), lr=1e-4)
+        
+        mlflow.log_param("Discriminator_Learning_Rate", 1e-5)
+        mlflow.log_param("Generator_Learning_Rate", 1e-4)
 
         if not quiet_mode:
             names = ["Gen Train Loss", "Gen Valid Loss", "Discrim Train Loss", "Best?"]
@@ -249,10 +254,12 @@ class MalGAN(nn.Module):
             train_l_g, train_l_d = self._fit_epoch(g_optimizer, d_optimizer)
             for block, loss in [("Generator", train_l_g), ("Discriminator", train_l_d)]:
                 MalGAN.tensorboard.add_scalar('Train_%s_Loss' % block, loss, epoch_cnt)
+                mlflow.log_metric('Train_%s_Loss' % block, loss, step=epoch_cnt)
 
             # noinspection PyTypeChecker
             valid_l_g = self._meas_loader_gen_loss(self._mal_data.valid)
             MalGAN.tensorboard.add_scalar('Validation_Generator_Loss', valid_l_g, epoch_cnt)
+            mlflow.log_metric('Validation_Generator_Loss', valid_l_g, step=epoch_cnt)
             flds = [train_l_g, valid_l_g, train_l_d, valid_l_g < best_loss]
             if flds[-1]:
                 self._save(self._build_export_name(is_final=False))

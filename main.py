@@ -19,6 +19,7 @@ from malgan import MalGAN, MalwareDataset, BlackBoxDetector, setup_logger
 import torch
 from torch import nn
 
+import mlflow
 
 
 def parse_args() -> argparse.Namespace:
@@ -142,10 +143,22 @@ def main():
                     h_discrim=args.discrim_hidden_sizes,
                     g_hidden=args.activation,
                     detector_type=args.detector)
-    malgan.fit(args.num_epoch, quiet_mode=args.q)
-    results = malgan.measure_and_export_results()
-    if args.print_results:
-        print(results)
+    
+    experiment = mlflow.get_experiment_by_name("MalGAN Z")
+    if experiment is None:
+        experiment = mlflow.create_experiment("MalGAN Z")
+    
+    with mlflow.start_run(experiment_id=experiment.experiment_id, log_system_metrics=True):
+        mlflow.autolog()
+        mlflow.enable_system_metrics_logging() 
+        mlflow.log_params(vars(args))
+        
+        malgan.fit(args.num_epoch, quiet_mode=args.q)
+        results = malgan.measure_and_export_results()
+        if args.print_results:
+            print(results)
+        mlflow.pytorch.log_model(malgan._gen, "generator", registered_model_name="MalGAN Z Generator")
+        mlflow.sklearn.log_model(malgan._bb, "BB", registered_model_name="MalGAN Z Black Box")
 
 
 if __name__ == "__main__":
