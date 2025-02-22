@@ -11,6 +11,7 @@ services:
     volumes:
       - .:/app
       - $HOME/.aws:/root/.aws:ro
+      - $HOME/.ssh:/root/.ssh:ro
     deploy:
       resources:
         reservations:
