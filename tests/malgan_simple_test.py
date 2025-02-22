@@ -5,8 +5,8 @@ import numpy as np
 import sklearn
 
 # %%
-ben = np.load('../data/trial_ben.npy')
-mal = np.load('../data/trial_mal.npy')
+ben = np.load('data/trial_ben.npy')
+mal = np.load('data/trial_mal.npy')
 print(ben,mal)
 
 # %%
