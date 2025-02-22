@@ -70,4 +70,10 @@ class Generator(nn.Module):
         g_theta = torch.max(m, o)  # Ensure binary bits only set positive
 
         m_prime = (g_theta > 0.5).float()
-        return m_prime, g_theta
+        
+        print(f"Is training: {self.training}")
+        
+        if self.training:
+            return m_prime, g_theta
+        else:
+            return m_prime

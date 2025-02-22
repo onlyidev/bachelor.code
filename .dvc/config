@@ -1,0 +1,6 @@
+[core]
+    autostage = true
+    remote = bachelor
+['remote "bachelor"']
+    url = s3://bachelor
+    endpointurl = http://100.71.5.126:9000

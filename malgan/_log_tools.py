@@ -11,7 +11,7 @@ from torch import Tensor
 
 ListOrInt = Union[int, List[int]]
 
-LOG_DIR = Path(".")
+LOG_DIR = Path("./logs")
 IS_CUDA = torch.cuda.is_available()
 
 

@@ -1,6 +1,8 @@
 services:
   gym:
-    image: pytorch/pytorch
+    build:
+      context: .
+      dockerfile: Dockerfile
     runtime: nvidia
     tty: true
     container_name: gym_torch
@@ -8,6 +10,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - $HOME/.aws:/root/.aws:ro
     deploy:
       resources:
         reservations:

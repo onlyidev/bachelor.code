@@ -158,7 +158,7 @@ def main():
         if args.print_results:
             print(results)
         mlflow.pytorch.log_model(malgan._gen, "generator", registered_model_name="MalGAN Z Generator")
-        mlflow.sklearn.log_model(malgan._bb, "BB", registered_model_name="MalGAN Z Black Box")
+        mlflow.sklearn.log_model(malgan._bb._model, "BB", registered_model_name="MalGAN Z Black Box")
 
 
 if __name__ == "__main__":

@@ -5,3 +5,6 @@ scikit_learn>=0.20.2
 mlflow
 boto3
 pynvml
+prince
+dvc
+dvc_s3
