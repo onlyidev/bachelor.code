@@ -1,0 +1,6 @@
+train:
+  Z: 10
+  batch_size: 32
+  num_epochs: 100
+  benign: trial_ben.npy
+  malware: trial_mal.npy
