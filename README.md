@@ -19,35 +19,18 @@ AWS_SECRET_ACCESS_KEY=~
 
 ## Running the Script
 
-The malware GAN is provided as a package in the folder `malgan`.  A driver script is provided in `main.py`, which processes input arguments via `argparse`.  The basic interface is:
+Use DVC pipelines
 
-    python main.py Z BATCH_SIZE NUM_EPOCHS MALWARE_FILE BENIGN_FILE
+## Current State
 
-* `Z` -- Dimension of the latent vector.  Must be a positive integer.
-* `BATCH_SIZE` -- Batch size for *malicious* examples.  The benign batch size is proportional to `BATCH_SIZE` and the fraction of total training samples that are benign.
-* `NUM_EPOCHS` -- Maximum number of training epochs
-* `MALWARE_FILE` -- Path to a serialized `numpy` or `torch` matrix where the rows represent a single **malware** file's binary feature vector.
-* `BENIGN_FILE` -- Path to a serialized `numpy` or `torch` matrix where the rows represent a single **benign** file's binary feature vector.
-
-For checkout purposes, we recommend calling:
-
-    python main.py 10 32 100 data/trial_mal.npy data/trial_ben.npy 
-
-## Dataset
-
-A trial dataset is included with this implementation in the `data` folder.  The data was publish in the repository: [yanminglai/Malware-GAN](https://github.com/yanminglai/Malware-GAN).  This dataset should only be used for proof of concept and initial trials. 
-
-We recommend the SLEIPNIR dataset.  It was published by ad-Dujaili et al.  The authors requested that the dataset not be shared publicly, and we respect that request.  However, researchers and students may request access directly from the authors as described on their [Github repository](https://github.com/ALFA-group/robust-adv-malware-detection).  Look for the link to the Google form.
-
-## CUDA Support
-
-The implementation supports both CPU and CUDA (i.e., GPU) execution.  If CUDA is detected on the system, the implementation defaults to CUDA support.
-
-## Requirements
-
-This program was tested with Python 3.6.5 on MacOS and on Debian Linux.  `requirements.txt` enumerates the exact packages used. A summary of the key requirements is below: 
-
-* PyTorch (`torch`) -- Ver. 1.2.0
-* Scikit-Learn (`sklearn`) -- Ver. 0.20.2
-* NumPy (`numpy`)
-* TensorboardX -- If runtime profiling is not required, this can be removed.
+- [x] Reducing dimensions with MCA
+- [ ] Extracting normal feature list from LIME
+    - [ ] For MCA ![in Testing](https://img.shields.io/badge/In_Testing-BrightGreen)
+    <!-- 
+        TODO(Adapt LIME for all features): Write an experiment for features other than binary
+     -->
+    - [ ] For Other Features ![Not started](https://img.shields.io/static/v1?label=&message=Not%20Started&color=red)
+<!-- 
+    TODO(Classification study): Check classification with/without modifications
+ -->
+- [ ] Classification performance study ![Not started](https://img.shields.io/static/v1?label=&message=Not%20Started&color=red)
