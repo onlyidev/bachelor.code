@@ -1,7 +1,15 @@
+split:
+  test_size: 0.2
+  random_state: 42
+  benign_dir: data/raw/sleipnir/benign
+  malware_dir: data/raw/sleipnir/malicious
 train:
   Z: 10
   batch_size: 32
   num_epochs: 1
-  benign: data/raw/trial_ben.npy
-  malware: data/raw/trial_mal.npy
+  benign: data/train/ben.npy
+  malware: data/train/mal.npy
   mca: data/MCA.csv
+valid:
+  benign: data/valid/ben.npy
+  malware: data/valid/mal.npy

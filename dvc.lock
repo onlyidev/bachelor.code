@@ -48,3 +48,31 @@ stages:
       hash: md5
       md5: 7f675faffb4ed0bd8d61e61792fb8d29
       size: 76627
+  split:
+    cmd: python scripts/split.py
+    deps:
+    - path: data/raw/sleipnir/benign
+      hash: md5
+      md5: a94ca5d3a46622b553d9d35ef8f18f0a.dir
+      size: 4037404256
+      nfiles: 19696
+    - path: data/raw/sleipnir/malicious
+      hash: md5
+      md5: c7057fcf38ebd7dc19f47bd8aef0a360.dir
+      size: 7173280084
+      nfiles: 34994
+    params:
+      params.yaml:
+        split.benign_dir: data/raw/sleipnir/benign
+        split.malware_dir: data/raw/sleipnir/malicious
+        split.random_state: 42
+        split.test_size: 0.2
+    outs:
+    - path: data/train/ben.npy
+      hash: md5
+      md5: 07dca973a84263d062907e19dc8031b7
+      size: 1434489392
+    - path: data/train/mal.npy
+      hash: md5
+      md5: 3b53f4382adf6b9b3122c284df107703
+      size: 1434489392

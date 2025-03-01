@@ -1,7 +1,22 @@
 stages:
+  split:
+    cmd: echo Hacking the world
+    # python scripts/split.py
+    deps:
+      - ${split.benign_dir}
+      - ${split.malware_dir}
+    outs:
+      - ${train.benign}
+      - ${train.malware}
+      - ${valid.benign}
+      - ${valid.malware}
+    params:
+      - split.test_size
+      - split.random_state
+      - split.benign_dir
+      - split.malware_dir
   train:
-    cmd:
-      python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} ${train.malware}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} ${train.malware}
     deps:
       - ${train.benign}
       - ${train.malware}
