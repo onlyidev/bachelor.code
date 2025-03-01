@@ -129,6 +129,15 @@ def load_dataset(file_path: Union[str, Path], y: int) -> MalwareDataset:
         raise ValueError("Unknown file extension.  Cannot determine how to import")
     return MalwareDataset(x=data, y=y)
 
+def exportRunYaml():
+    import yaml
+    export = dict(
+    malgan = dict(
+        id = mlflow.active_run().info.run_id
+    )
+    with open("malgan.yaml", "w") as f:
+        yaml.dump(export, f
+)
 
 def main():
     args = parse_args()
@@ -159,6 +168,7 @@ def main():
             print(results)
         mlflow.pytorch.log_model(malgan._gen, "generator", registered_model_name="MalGAN Z Generator")
         mlflow.sklearn.log_model(malgan._bb._model, "BB", registered_model_name="MalGAN Z Black Box")
+        exportRunYaml()
 
 
 if __name__ == "__main__":

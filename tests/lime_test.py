@@ -16,9 +16,14 @@ mal = mca_data[mca_data['class'] == 1].iloc[:,:-3].values
 rf = sklearn.ensemble.RandomForestClassifier(n_estimators=100)
 rf.fit(np.concatenate((ben, mal)), np.concatenate((np.zeros(ben.shape[0]), np.ones(mal.shape[0]))))
 # %%
-exp = explainer.explain_instance(mca_data.iloc[900,:-3].values, rf.predict_proba, num_features=100)
+id = 'runs:/984c6217d8cb4da6bd79ff089cca7355'
+gen = mlflow.pyfunc.load_model(f"{id}/generator")
+obf = gen.predict(pd.DataFrame(mca_data.iloc[443,:-3].values.reshape(1,-1)))
+#%%
+# exp = explainer.explain_instance(mca_data.iloc[443,:-3].values, rf.predict_proba, num_features=100)
+exp = explainer.explain_instance(obf.iloc[0].values, rf.predict_proba, num_features=100)
 # %%
 exp.show_in_notebook(show_table=True, show_all=False)
 
 #%%
-mca_data.iloc[900]["class"]
+mca_data.iloc[443]["class"]

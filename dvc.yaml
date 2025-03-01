@@ -1,12 +1,20 @@
 stages:
   train:
-    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} data/${train.benign} data/${train.malware}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} data/${train.benign}
+      data/${train.malware}
     deps:
     - data/${train.benign}
     - data/${train.malware}
     params:
-      - train.Z
-      - train.batch_size
-      - train.num_epochs
-      - train.benign
-      - train.malware
+    - train.Z
+    - train.batch_size
+    - train.num_epochs
+    - train.benign
+    - train.malware
+    outs:
+    - malgan.yaml
+  testing:
+    cmd: test
+    params:
+    - malgan.yaml:
+      - malgan.id
