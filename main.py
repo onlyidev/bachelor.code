@@ -132,7 +132,10 @@ def load_dataset(file_path: Union[str, Path], y: int) -> MalwareDataset:
 
 def exportRunYaml():
     import yaml
-    read = yaml.safe_load(open("dynamic.yaml", "r"))
+    try:
+        read = yaml.safe_load(open("dynamic.yaml", "r"))
+    except:
+        read = dict()
     export = dict(malgan=dict(id=mlflow.active_run().info.run_id))
     with open("dynamic.yaml", "w") as f:
         yaml.dump(read|export, f)

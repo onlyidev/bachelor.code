@@ -369,7 +369,9 @@ class MalGAN(nn.Module):
         Measure the test accuracy and provide results information
 
         :return: Results information as a comma separated string
-        """
+        """ 
+        prev = self._gen.training
+        self._gen.training = True
         # noinspection PyTypeChecker
         valid_loss = self._meas_loader_gen_loss(self._mal_data.valid)
         # noinspection PyTypeChecker
@@ -412,6 +414,7 @@ class MalGAN(nn.Module):
         # noinspection PyProtectedMember
         y_prob = self._bb._model.predict_proba(x)  # pylint: disable=protected-access
         y_prob = y_prob[:, MalGAN.Label.Malware.value]
+        self._gen.training = prev
         return _export_results(self, valid_loss, test_loss, avg_changed_bits, y_actual,
                                y_mal_orig, y_prob, y_hat_post)
 

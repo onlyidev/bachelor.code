@@ -5,13 +5,13 @@ import numpy as np
 import sklearn
 
 # %%
-ben = np.load('data/trial_ben.npy')
-mal = np.load('data/trial_mal.npy')
+ben = np.load('data/raw/trial_ben.npy')
+mal = np.load('data/raw/trial_mal.npy')
 print(ben,mal)
 
 # %%
 
-id = 'runs:/984c6217d8cb4da6bd79ff089cca7355'
+id = 'runs:/9755f458ae804319afc6922afd8bd477'
 
 black_box = mlflow.pyfunc.load_model(f"{id}/BB")
 gen = mlflow.pyfunc.load_model(f"{id}/generator")

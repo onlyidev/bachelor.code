@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python main.py 10 32 100 data/raw/trial_ben.npy data/raw/trial_mal.npy
+    cmd: python main.py 10 32 1 data/raw/trial_ben.npy data/raw/trial_mal.npy
     deps:
     - path: data/raw/trial_ben.npy
       hash: md5
@@ -17,11 +17,11 @@ stages:
         train.batch_size: 32
         train.benign: data/raw/trial_ben.npy
         train.malware: data/raw/trial_mal.npy
-        train.num_epochs: 100
+        train.num_epochs: 1
     outs:
     - path: dynamic.yaml
       hash: md5
-      md5: 25cad90a2614a1e8ba9f069332625cad
+      md5: 9ac475dd9011498bbccf26e04d547cea
       size: 47
   MCA:
     cmd: python mca.py
@@ -36,15 +36,15 @@ stages:
       size: 1400960
     - path: dynamic.yaml
       hash: md5
-      md5: 25cad90a2614a1e8ba9f069332625cad
+      md5: 9ac475dd9011498bbccf26e04d547cea
       size: 47
     params:
       params.yaml:
         train.mca: data/MCA.csv
       dynamic.yaml:
-        malgan.id: 984c6217d8cb4da6bd79ff089cca7355
+        malgan.id: 9755f458ae804319afc6922afd8bd477
     outs:
     - path: data/MCA.csv
       hash: md5
-      md5: 92cda2c7de87d3d49a27ace0651188cf
-      size: 1003250
+      md5: d06023d2458ccf3d91cf06048e297d14
+      size: 1003020

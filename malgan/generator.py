@@ -71,8 +71,6 @@ class Generator(nn.Module):
 
         m_prime = (g_theta > 0.5).float()
         
-        print(f"Is training: {self.training}")
-        
         if self.training:
             return m_prime, g_theta
         else:
