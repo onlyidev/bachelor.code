@@ -21,7 +21,7 @@ stages:
     outs:
     - path: dynamic.yaml
       hash: md5
-      md5: 9ac475dd9011498bbccf26e04d547cea
+      md5: 9f40814229e2ec9d193e6e0245e7721e
       size: 47
   MCA:
     cmd: python mca.py
@@ -36,13 +36,13 @@ stages:
       size: 1400960
     - path: dynamic.yaml
       hash: md5
-      md5: 9ac475dd9011498bbccf26e04d547cea
+      md5: 9f40814229e2ec9d193e6e0245e7721e
       size: 47
     params:
       params.yaml:
         train.mca: data/MCA.csv
       dynamic.yaml:
-        malgan.id: 9755f458ae804319afc6922afd8bd477
+        malgan.id: 1554c8a5c3eb4c28a0ef268c56b39432
     outs:
     - path: data/MCA.csv
       hash: md5
