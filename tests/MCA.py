@@ -3,12 +3,14 @@ import numpy as np
 import pandas as pd
 import prince
 import matplotlib.pyplot as plt
+import dvc.api
 
+params = dvc.api.params_show()["train"]
 # Load the .npy file
-data_benign = np.load('data/trial_ben.npy')
+data_benign = np.load(f"data/{params['benign']}")
 df_benign = pd.DataFrame(data_benign)
 
-data_malicious = np.load('data/trial_mal.npy')
+data_malicious = np.load(f"data/{params['malware']}")
 df_malicious = pd.DataFrame(data_malicious)
 
 df = pd.concat([df_benign, df_malicious], ignore_index=True)
@@ -19,6 +21,7 @@ df.head()
 mca = prince.MCA()
 mca = mca.fit(df)
 transformed_data = mca.transform(df)
+transformed_data.columns = ['Low API Density', 'High API Density']
 
 # Concatenate transformed_data with the original DataFrame df
 df = pd.concat([df, transformed_data], axis=1)
@@ -40,4 +43,4 @@ plt.legend()
 plt.show()
 
 # %%
-df.to_csv('data/MCA.csv', index=False)
+df.to_csv(f"data/{params['mca']}", index=False)

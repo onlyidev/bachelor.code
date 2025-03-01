@@ -4,3 +4,4 @@ train:
   num_epochs: 100
   benign: trial_ben.npy
   malware: trial_mal.npy
+  mca: MCA.csv
