@@ -46,7 +46,7 @@ df["class"] = labels
 # plt.show()
 
 # %%
-df.to_csv(f"{params['mca']}", index=False)
+df.iloc[:,-3:].to_csv(f"{params['mca']}", index=False)
 
-# %%
+# %%skip
 helpers.mcaflow.log_model(run_id, mca, "mca", input_example=df_benign.head(), registered_model_name="MCA")

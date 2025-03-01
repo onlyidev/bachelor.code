@@ -11,7 +11,7 @@ print(ben,mal)
 
 # %%
 
-id = 'runs:/9755f458ae804319afc6922afd8bd477'
+id = 'runs:/1554c8a5c3eb4c28a0ef268c56b39432'
 
 black_box = mlflow.pyfunc.load_model(f"{id}/BB")
 gen = mlflow.pyfunc.load_model(f"{id}/generator")
