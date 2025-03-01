@@ -2,6 +2,6 @@ train:
   Z: 10
   batch_size: 32
   num_epochs: 100
-  benign: trial_ben.npy
-  malware: trial_mal.npy
-  mca: MCA.csv
+  benign: data/raw/trial_ben.npy
+  malware: data/raw/trial_mal.npy
+  mca: data/MCA.csv

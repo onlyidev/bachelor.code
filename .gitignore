@@ -112,3 +112,4 @@ venv.bak/
 runs
 saved_models
 /logs
+/dynamic.yaml

@@ -1,11 +1,10 @@
 stages:
   train:
     cmd:
-      python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} data/${train.benign}
-      data/${train.malware}
+      python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} ${train.malware}
     deps:
-      - data/${train.benign}
-      - data/${train.malware}
+      - ${train.benign}
+      - ${train.malware}
     params:
       - train.Z
       - train.batch_size
@@ -15,19 +14,14 @@ stages:
     outs:
       - dynamic.yaml
   MCA:
-    cmd: mca.py
+    cmd: python mca.py
     deps:
-      - data/${train.benign}
-      - data/${train.malware}
+      - ${train.benign}
+      - ${train.malware}
       - dynamic.yaml
     params:
       - dynamic.yaml:
           - malgan.id
       - train.mca
     outs:
-      - data/${train.mca}
-  testing:
-    cmd: test
-    params:
-      - dynamic.yaml:
-          - malgan.id
+      - ${train.mca}
