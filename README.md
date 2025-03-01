@@ -24,6 +24,7 @@ Use DVC pipelines
 ## Current State
 
 - [x] Reducing dimensions with MCA
+- [x] Prepare SLEIPNIR dataset
 - [ ] Extracting normal feature list from LIME
     - [ ] For MCA ![in Testing](https://img.shields.io/badge/In_Testing-BrightGreen)
     <!-- 

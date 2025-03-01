@@ -1,7 +1,6 @@
 stages:
   split:
-    cmd: echo Hacking the world
-    # python scripts/split.py
+    cmd: python scripts/split.py
     deps:
       - ${split.benign_dir}
       - ${split.malware_dir}
