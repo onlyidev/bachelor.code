@@ -28,9 +28,11 @@ Use DVC pipelines
     - [ ] For MCA ![in Testing](https://img.shields.io/badge/In_Testing-BrightGreen)
     <!-- 
         TODO(Adapt LIME for all features): Write an experiment for features other than binary
+        Issue URL: https://github.com/onlyidev/bachelor.code/issues/2
      -->
     - [ ] For Other Features ![Not started](https://img.shields.io/static/v1?label=&message=Not%20Started&color=red)
 <!-- 
     TODO(Classification study): Check classification with/without modifications
+    Issue URL: https://github.com/onlyidev/bachelor.code/issues/1
  -->
 - [ ] Classification performance study ![Not started](https://img.shields.io/static/v1?label=&message=Not%20Started&color=red)
