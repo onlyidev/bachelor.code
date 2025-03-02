@@ -20,7 +20,7 @@ import torch
 from torch import nn
 
 import mlflow
-
+import helpers.experiment;
 
 def parse_args() -> argparse.Namespace:
     r"""
@@ -130,17 +130,6 @@ def load_dataset(file_path: Union[str, Path], y: int) -> MalwareDataset:
     return MalwareDataset(x=data, y=y)
 
 
-def exportRunYaml():
-    import yaml
-    try:
-        read = yaml.safe_load(open("dynamic.yaml", "r"))
-    except:
-        read = dict()
-    export = dict(malgan=dict(id=mlflow.active_run().info.run_id))
-    with open("dynamic.yaml", "w") as f:
-        yaml.dump(read|export, f)
-
-
 def main():
     args = parse_args()
     setup_logger(args.q)
@@ -155,11 +144,7 @@ def main():
                     g_hidden=args.activation,
                     detector_type=args.detector)
     
-    experiment = mlflow.get_experiment_by_name("MalGAN Z")
-    if experiment is None:
-        experiment = mlflow.create_experiment("MalGAN Z")
-    
-    with mlflow.start_run(experiment_id=experiment.experiment_id, log_system_metrics=True):
+    with helpers.experiment.startExperiment("MalGAN Z"):
         mlflow.autolog()
         mlflow.enable_system_metrics_logging() 
         mlflow.log_params(vars(args))
@@ -170,7 +155,7 @@ def main():
             print(results)
         mlflow.pytorch.log_model(malgan._gen, "generator", registered_model_name="MalGAN Z Generator")
         mlflow.sklearn.log_model(malgan._bb._model, "BB", registered_model_name="MalGAN Z Black Box")
-        exportRunYaml()
+        helpers.experiment.exportRunYaml()
 
 
 if __name__ == "__main__":

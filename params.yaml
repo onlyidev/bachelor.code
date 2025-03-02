@@ -10,6 +10,7 @@ train:
   benign: data/train/ben.npy
   malware: data/train/mal.npy
   mca: data/MCA.csv
+  estimators: 500
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy

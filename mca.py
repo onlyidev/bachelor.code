@@ -7,7 +7,7 @@ import dvc.api
 import helpers.mcaflow
 
 params = dvc.api.params_show()
-run_id = params["malgan"]["id"]
+run_id = params["experiment"]["id"]
 params = params["train"]
 # Load the .npy file
 data_benign = np.load(f"{params['benign']}")

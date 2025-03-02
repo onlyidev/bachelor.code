@@ -14,7 +14,7 @@ stages:
       - split.random_state
       - split.benign_dir
       - split.malware_dir
-  train:
+  train_malgan:
     cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} ${train.malware}
     deps:
       - ${train.benign}
@@ -27,7 +27,7 @@ stages:
       - train.malware
     outs:
       - dynamic.yaml
-  MCA:
+  train_mca:
     cmd: python mca.py
     deps:
       - ${train.benign}
@@ -35,7 +35,16 @@ stages:
       - dynamic.yaml
     params:
       - dynamic.yaml:
-          - malgan.id
+          - experiment.id
       - train.mca
     outs:
       - ${train.mca}
+  train_mca_classifier:
+    cmd: python mca_classifier.py
+    deps:
+      - dynamic.yaml
+    params:
+      - train.mca
+      - train.estimators
+      - dynamic.yaml:
+          - experiment.id

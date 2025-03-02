@@ -84,3 +84,64 @@ stages:
       hash: md5
       md5: a0b5d1d28311883ba15f4bd2b06fc0d9
       size: 358713488
+  train_malgan:
+    cmd: python main.py 10 32 1 data/train/ben.npy data/train/mal.npy
+    deps:
+    - path: data/train/ben.npy
+      hash: md5
+      md5: 07dca973a84263d062907e19dc8031b7
+      size: 1434489392
+    - path: data/train/mal.npy
+      hash: md5
+      md5: 3b53f4382adf6b9b3122c284df107703
+      size: 1434489392
+    params:
+      params.yaml:
+        train.Z: 10
+        train.batch_size: 32
+        train.benign: data/train/ben.npy
+        train.malware: data/train/mal.npy
+        train.num_epochs: 1
+    outs:
+    - path: dynamic.yaml
+      hash: md5
+      md5: 3ed3941577c459e896e5a91b5db000fb
+      size: 50
+  train_mca:
+    cmd: python mca.py
+    deps:
+    - path: data/train/ben.npy
+      hash: md5
+      md5: 07dca973a84263d062907e19dc8031b7
+      size: 1434489392
+    - path: data/train/mal.npy
+      hash: md5
+      md5: 3b53f4382adf6b9b3122c284df107703
+      size: 1434489392
+    - path: dynamic.yaml
+      hash: md5
+      md5: c5f0b94af8a5a348b00dae8e5b17c960
+      size: 50
+    params:
+      params.yaml:
+        train.mca: data/MCA.csv
+      dynamic.yaml:
+        experiment.id: 984c6217d8cb4da6bd79ff089cca7355
+    outs:
+    - path: data/MCA.csv
+      hash: md5
+      md5: 7f675faffb4ed0bd8d61e61792fb8d29
+      size: 76627
+  train_mca_classifier:
+    cmd: python mca_classifier.py
+    deps:
+    - path: dynamic.yaml
+      hash: md5
+      md5: 3ed3941577c459e896e5a91b5db000fb
+      size: 50
+    params:
+      params.yaml:
+        train.estimators: 500
+        train.mca: data/MCA.csv
+      dynamic.yaml:
+        experiment.id: 1554c8a5c3eb4c28a0ef268c56b39432
