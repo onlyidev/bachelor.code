@@ -39,6 +39,10 @@ stages:
       - train.mca
     outs:
       - ${train.mca}
+  graph_mca:
+    cmd: python scripts/graph_mca.py
+    deps:
+      - ${train.mca}
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:

@@ -26,7 +26,7 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
         try:
             with open(file_path, 'rb') as f:
                 tensor = pickle.load(f)
-                tensors.append(tensor)
+                tensors += tensor
         except FileNotFoundError:
             print(f"Error: File not found at {file_path}")
             return

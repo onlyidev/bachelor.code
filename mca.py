@@ -20,7 +20,7 @@ df = pd.concat([df_benign, df_malicious], ignore_index=True)
 
 # Display the DataFrame
 df.head()
-
+#%%
 mca = prince.MCA()
 mca = mca.fit(df)
 transformed_data = mca.transform(df)
@@ -38,12 +38,6 @@ labels = [0] * len(df_benign) + [1] * len(df_malicious)
 
 # Add the labels as a new column to the transformed data
 df["class"] = labels
-
-# %%
-# plt.scatter(benign.iloc[:, 0], benign.iloc[:, 1], label="Benign")
-# plt.scatter(mal.iloc[:, 0], mal.iloc[:, 1], label="Malicious")
-# plt.legend()
-# plt.show()
 
 # %%
 df.iloc[:,-3:].to_csv(f"{params['mca']}", index=False)
