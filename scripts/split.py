@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 import dvc.api
 from tqdm import tqdm
 
-def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid, test_size=0.2, random_state=42):
+def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid, test_size=0.2, random_state=42, limit=None):
     """
     Aggregates tensors from multiple pickle files in a directory, splits the aggregated
     tensor into training and validation sets, and saves the resulting sets to separate
@@ -20,7 +20,7 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
         random_state (int): Random state for reproducible splitting.
     """
     tensors = []
-    files = os.listdir(input_dir)[:19696]
+    files = os.listdir(input_dir) if limit is None else os.listdir(input_dir)[:limit]
     for filename in tqdm(files, desc=f"Processing {input_dir}"):
         file_path = os.path.join(input_dir, filename)
         try:
@@ -77,5 +77,5 @@ if __name__ == "__main__":
     s_params = params["split"]
     t_params = params["train"]
     v_params = params["valid"]
-    aggregate_and_split_tensors(s_params["benign_dir"], t_params["benign"], v_params["benign"], test_size=s_params["test_size"], random_state=s_params["random_state"])
-    aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"], random_state=s_params["random_state"])
+    aggregate_and_split_tensors(s_params["benign_dir"], t_params["benign"], v_params["benign"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"])
+    aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"]))

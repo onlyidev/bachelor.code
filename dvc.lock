@@ -70,30 +70,30 @@ stages:
     outs:
     - path: data/train/ben.npy
       hash: md5
-      md5: 50dfc319c1323bfd44d5a373cd36279c
-      size: 728480
+      md5: 5687edfd4825b8023266d941b215e734
+      size: 1434489392
     - path: data/train/mal.npy
       hash: md5
-      md5: 0e76098d69ad00a4201d59cc805f8a5a
-      size: 728480
+      md5: 3425548a49f81ba9080568178354a0b8
+      size: 1434489392
     - path: data/valid/ben.npy
       hash: md5
-      md5: b4590c16631cd5896f65e01f39dd5e2f
-      size: 182216
+      md5: c7e0c5b972ad934419de093abc2ba0a4
+      size: 358713488
     - path: data/valid/mal.npy
       hash: md5
-      md5: 11588f9f9093f9e1d969bf82822afbd3
-      size: 182216
+      md5: 6acded8529c166fce33e348f60d1de90
+      size: 358713488
   train_malgan:
     cmd: python main.py 10 32 1 data/train/ben.npy data/train/mal.npy
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: 07dca973a84263d062907e19dc8031b7
+      md5: 5687edfd4825b8023266d941b215e734
       size: 1434489392
     - path: data/train/mal.npy
       hash: md5
-      md5: 3b53f4382adf6b9b3122c284df107703
+      md5: 3425548a49f81ba9080568178354a0b8
       size: 1434489392
     params:
       params.yaml:

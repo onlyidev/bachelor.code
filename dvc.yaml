@@ -37,6 +37,8 @@ stages:
       - dynamic.yaml:
           - experiment.id
       - train.mca
+      - train.estimators
+      - train.head
     outs:
       - ${train.mca}
   graph_mca:
@@ -47,8 +49,23 @@ stages:
     cmd: python mca_classifier.py
     deps:
       - dynamic.yaml
+      - ${train.mca}
     params:
       - train.mca
       - train.estimators
+      - dynamic.yaml:
+          - experiment.id
+  extract_normal_features:
+    cmd: python lime_normal.py
+    deps:
+      - ${train.benign}
+      - ${train.mca}
+      - dynamic.yaml
+    outs:
+      - ${train.normal_features}
+    params:
+      - train.benign
+      - train.mca
+      - train.normal_features
       - dynamic.yaml:
           - experiment.id

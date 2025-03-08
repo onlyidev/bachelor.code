@@ -1,3 +1,7 @@
+"""
+    Train MCA classifier - Random Forest
+    It's job is the same as main classifier, but it uses the MCA data
+"""
 #%%
 import mlflow
 import dvc.api
