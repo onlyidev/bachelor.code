@@ -145,7 +145,7 @@ def main():
                     g_hidden=args.activation,
                     detector_type=args.detector)
     
-    with helpers.experiment.startExperiment(dvc.api.params_show()["experiment"]["name"]):
+    with helpers.experiment.startExperiment(dvc.api.params_show()["train"]["name"]) as exp:
         mlflow.autolog()
         mlflow.enable_system_metrics_logging() 
         mlflow.log_params(vars(args))

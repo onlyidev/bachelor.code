@@ -2,71 +2,75 @@ stages:
   split:
     cmd: python scripts/split.py
     deps:
-      - ${split.benign_dir}
-      - ${split.malware_dir}
+    - ${split.benign_dir}
+    - ${split.malware_dir}
     outs:
-      - ${train.benign}
-      - ${train.malware}
-      - ${valid.benign}
-      - ${valid.malware}
+    - ${train.benign}
+    - ${train.malware}
+    - ${valid.benign}
+    - ${valid.malware}
     params:
-      - split.test_size
-      - split.random_state
-      - split.benign_dir
-      - split.malware_dir
+    - split.test_size
+    - split.random_state
+    - split.benign_dir
+    - split.malware_dir
   train_malgan:
-    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} ${train.malware}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign}
+      ${train.malware}
     deps:
-      - ${train.benign}
-      - ${train.malware}
+    - ${train.benign}
+    - ${train.malware}
     params:
-      - train.Z
-      - train.batch_size
-      - train.num_epochs
-      - train.benign
-      - train.malware
-      - experiment.name
+    - train.Z
+    - train.batch_size
+    - train.num_epochs
+    - train.benign
+    - train.malware
+    - train.name
     outs:
-      - dynamic.yaml
+    - dynamic.yaml:
+        persist: true
   train_mca:
     cmd: python mca.py
     deps:
-      - ${train.benign}
-      - ${train.malware}
-      - dynamic.yaml
+    - ${train.benign}
+    - ${train.malware}
+    - dynamic.yaml
     params:
-      - dynamic.yaml:
-          - experiment.id
-      - train.mca
-      - train.estimators
-      - train.head
+    - dynamic.yaml:
+      - experiment.id
+    - train.mca
+    - train.estimators
+    - train.head
     outs:
-      - ${train.mca}
+    - ${train.mca}:
+        persist: true
   graph_mca:
     cmd: python scripts/graph_mca.py
     deps:
-      - ${train.mca}
+    - ${train.mca}
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
-      - dynamic.yaml
-      - ${train.mca}
+    - dynamic.yaml
+    - ${train.mca}
     params:
-      - train.mca
-      - train.estimators
-      - dynamic.yaml:
-          - experiment.id
+    - train.mca
+    - train.estimators
+    - dynamic.yaml:
+      - experiment.id
   extract_normal_features:
     cmd: python lime_normal.py
     deps:
-      - ${train.benign}
-      - ${train.mca}
-      - dynamic.yaml
+    - ${train.benign}
+    - ${train.mca}
+    - dynamic.yaml
     outs:
-      - ${train.normal_features}
+    - ${train.normal_features}:
+        persist: true
     params:
-      - train.benign
-      - train.mca
-      - train.normal_features
-      - dynamic.yaml:
-          - experiment.id
+    - train.benign
+    - train.mca
+    - train.normal_features
+    - dynamic.yaml:
+      - experiment.id

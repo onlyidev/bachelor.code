@@ -70,78 +70,119 @@ stages:
     outs:
     - path: data/train/ben.npy
       hash: md5
-      md5: 5687edfd4825b8023266d941b215e734
-      size: 1434489392
+      md5: e78244d64fd8f808dcb4b77dec4baa0b
+      size: 72835328
     - path: data/train/mal.npy
       hash: md5
-      md5: 3425548a49f81ba9080568178354a0b8
-      size: 1434489392
+      md5: 41e98e974987926de8ff1acda690cca9
+      size: 72835328
     - path: data/valid/ben.npy
       hash: md5
-      md5: c7e0c5b972ad934419de093abc2ba0a4
-      size: 358713488
+      md5: 584bd545c3e6a5098737aded01f778fb
+      size: 18208928
     - path: data/valid/mal.npy
       hash: md5
-      md5: 6acded8529c166fce33e348f60d1de90
-      size: 358713488
+      md5: 55871e5d2a24de8bc847ef2b085f99a1
+      size: 18208928
   train_malgan:
     cmd: python main.py 10 32 1 data/train/ben.npy data/train/mal.npy
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: 5687edfd4825b8023266d941b215e734
-      size: 1434489392
+      md5: e78244d64fd8f808dcb4b77dec4baa0b
+      size: 72835328
     - path: data/train/mal.npy
       hash: md5
-      md5: 3425548a49f81ba9080568178354a0b8
-      size: 1434489392
+      md5: 41e98e974987926de8ff1acda690cca9
+      size: 72835328
     params:
       params.yaml:
         train.Z: 10
         train.batch_size: 32
         train.benign: data/train/ben.npy
         train.malware: data/train/mal.npy
+        train.name: Bachelor_2000
         train.num_epochs: 1
     outs:
     - path: dynamic.yaml
       hash: md5
-      md5: 3ed3941577c459e896e5a91b5db000fb
-      size: 50
+      md5: 791b5a67900465f8d4debfa710a0225c
+      size: 51
   train_mca:
     cmd: python mca.py
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: 50dfc319c1323bfd44d5a373cd36279c
-      size: 728480
+      md5: e78244d64fd8f808dcb4b77dec4baa0b
+      size: 72835328
     - path: data/train/mal.npy
       hash: md5
-      md5: 0e76098d69ad00a4201d59cc805f8a5a
-      size: 728480
+      md5: 41e98e974987926de8ff1acda690cca9
+      size: 72835328
     - path: dynamic.yaml
       hash: md5
-      md5: 3ed3941577c459e896e5a91b5db000fb
-      size: 50
+      md5: 791b5a67900465f8d4debfa710a0225c
+      size: 51
     params:
       params.yaml:
+        train.estimators: 100
+        train.head: 1000
         train.mca: data/MCA.csv
       dynamic.yaml:
-        experiment.id: 1554c8a5c3eb4c28a0ef268c56b39432
+        experiment.id: a253b67600424c6fb712c63de6bac44f
     outs:
     - path: data/MCA.csv
       hash: md5
-      md5: c81bae5f8b2e17c64011975e75d8d4f4
-      size: 743
+      md5: c6945cf768361d6e18ea9b4406a55e6d
+      size: 73614
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
+    - path: data/MCA.
+      hash: md5
+      md5: fba1a5607a3588436ea136ce9a320f55
+      size: 73749
     - path: dynamic.yaml
       hash: md5
-      md5: 3ed3941577c459e896e5a91b5db000fb
-      size: 50
+      md5: 791b5a67900465f8d4debfa710a0225c
+      size: 51
     params:
       params.yaml:
-        train.estimators: 500
-        train.mca: data/MCA.csv
+        train.estimators: 100
+        train.mca: data/MCA.
       dynamic.yaml:
-        experiment.id: 1554c8a5c3eb4c28a0ef268c56b39432
+        experiment.id: a253b67600424c6fb712c63de6bac44f
+  graph_mca:
+    cmd: python scripts/graph_mca.py
+    deps:
+    - path: data/MCA.csv
+      hash: md5
+      md5: c6945cf768361d6e18ea9b4406a55e6d
+      size: 73614
+  extract_normal_features:
+    cmd: python lime_normal.py
+    deps:
+    - path: data/MCA.csv
+      hash: md5
+      md5: c6945cf768361d6e18ea9b4406a55e6d
+      size: 73614
+    - path: data/train/ben.npy
+      hash: md5
+      md5: e78244d64fd8f808dcb4b77dec4baa0b
+      size: 72835328
+    - path: dynamic.yaml
+      hash: md5
+      md5: 791b5a67900465f8d4debfa710a0225c
+      size: 51
+    params:
+      params.yaml:
+        train.benign: data/train/ben.npy
+        train.mca: data/MCA.csv
+        train.normal_features: data/normal_features.txt
+      dynamic.yaml:
+        experiment.id: a253b67600424c6fb712c63de6bac44f
+    outs:
+    - path: data/normal_features.txt
+      hash: md5
+      md5: cc90a5df5b2cc73fbace22c94f77beb3
+      size: 222

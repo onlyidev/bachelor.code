@@ -9,12 +9,11 @@ train:
   num_epochs: 1
   benign: data/train/ben.npy
   malware: data/train/mal.npy
-  mca: data/MCA.
+  mca: data/MCA.csv
   normal_features: data/normal_features.txt
+  name: Bachelor_2000
   estimators: 100
   head: 1000
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
-experiment:
-  name: Bachelor_2000
