@@ -20,7 +20,8 @@ import torch
 from torch import nn
 
 import mlflow
-import helpers.experiment;
+import helpers.experiment
+import dvc.api
 
 def parse_args() -> argparse.Namespace:
     r"""
@@ -144,7 +145,7 @@ def main():
                     g_hidden=args.activation,
                     detector_type=args.detector)
     
-    with helpers.experiment.startExperiment("MalGAN Z"):
+    with helpers.experiment.startExperiment(dvc.api.params_show()["experiment"]["name"]):
         mlflow.autolog()
         mlflow.enable_system_metrics_logging() 
         mlflow.log_params(vars(args))

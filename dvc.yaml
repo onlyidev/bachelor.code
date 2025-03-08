@@ -25,6 +25,7 @@ stages:
       - train.num_epochs
       - train.benign
       - train.malware
+      - experiment.name
     outs:
       - dynamic.yaml
   train_mca:

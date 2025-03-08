@@ -16,3 +16,5 @@ train:
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
+experiment:
+  name: Bachelor_2000

@@ -15,10 +15,10 @@ run_id = params["experiment"]["id"]
 params = params["train"]
 # Load the .npy file
 data_benign = np.load(f"{params['benign']}", mmap_mode='r')
-df_benign = pd.DataFrame(data_benign).head(params["head"])
+df_benign = pd.DataFrame(data_benign)
 
 data_malicious = np.load(f"{params['malware']}", mmap_mode='r')
-df_malicious = pd.DataFrame(data_malicious).head(params["head"])
+df_malicious = pd.DataFrame(data_malicious)
 
 df = pd.concat([df_benign, df_malicious], ignore_index=True)
 
