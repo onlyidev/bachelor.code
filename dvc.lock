@@ -138,10 +138,10 @@ stages:
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
-    - path: data/MCA.
+    - path: data/MCA.csv
       hash: md5
-      md5: fba1a5607a3588436ea136ce9a320f55
-      size: 73749
+      md5: c6945cf768361d6e18ea9b4406a55e6d
+      size: 73614
     - path: dynamic.yaml
       hash: md5
       md5: 791b5a67900465f8d4debfa710a0225c
@@ -149,7 +149,7 @@ stages:
     params:
       params.yaml:
         train.estimators: 100
-        train.mca: data/MCA.
+        train.mca: data/MCA.csv
       dynamic.yaml:
         experiment.id: a253b67600424c6fb712c63de6bac44f
   graph_mca:
@@ -184,5 +184,5 @@ stages:
     outs:
     - path: data/normal_features.txt
       hash: md5
-      md5: cc90a5df5b2cc73fbace22c94f77beb3
+      md5: c2976aa43265cf2862a4a3705add079e
       size: 222

@@ -115,3 +115,6 @@ saved_models
 /dynamic.yaml
 /uts-persist
 /lmao
+
+# tmp files
+**/*.tmp

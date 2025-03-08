@@ -29,7 +29,7 @@ df = mca.predict(df_ben)
 normal = set()
 
 def process_example(example):
-    exp = explainer.explain_instance(example, mca_classifier.predict_proba, num_samples=2000)
+    exp = explainer.explain_instance(example, mca_classifier.predict_proba)
     return set([name for name, _ in exp.as_list()])
 
 if __name__ == '__main__':
