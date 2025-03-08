@@ -78,4 +78,4 @@ if __name__ == "__main__":
     t_params = params["train"]
     v_params = params["valid"]
     aggregate_and_split_tensors(s_params["benign_dir"], t_params["benign"], v_params["benign"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"])
-    aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"]))
+    aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"])
