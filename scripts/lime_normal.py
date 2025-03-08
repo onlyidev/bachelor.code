@@ -30,7 +30,9 @@ normal = set()
 
 def process_example(example):
     exp = explainer.explain_instance(example, mca_classifier.predict_proba)
-    return set([name for name, _ in exp.as_list()])
+    # TODO: Extract actually correct features
+    # milestone: Figure out LIME
+    return set([name for name, _ in filter(lambda pair: pair[1] > 0, exp.as_list())])
 
 if __name__ == '__main__':
     print("Processing benign examples")

@@ -60,7 +60,7 @@ stages:
     - dynamic.yaml:
       - experiment.id
   extract_normal_features:
-    cmd: python lime_normal.py
+    cmd: python scripts/lime_normal.py
     deps:
     - ${train.benign}
     - ${train.mca}

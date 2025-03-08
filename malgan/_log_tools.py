@@ -15,7 +15,7 @@ LOG_DIR = Path("./logs")
 IS_CUDA = torch.cuda.is_available()
 
 
-def setup_logger(quiet_mode: bool, log_level: int = logging.DEBUG,
+def setup_logger(quiet_mode: bool, log_level: int = logging.INFO,
                  job_id: Optional[ListOrInt] = None) -> None:
     r"""
     Logger Configurator
