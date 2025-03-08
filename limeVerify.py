@@ -38,6 +38,7 @@ class LimeVerify:
         return self.__mca.predict(input)
     
     # TODO Determine for which class the explanations are meant
+    # Issue URL: https://github.com/onlyidev/bachelor.code/issues/3
     # milestone: Figure out LIME
     def verify(self, input, outputResult=False):
         exp = self.__explainer.explain_instance(input, self.__mca_classifier.predict_proba, labels=(0,))
