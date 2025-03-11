@@ -28,8 +28,6 @@ normal = set()
 
 def process_example(example):
     exp = explainer.explain_important(example, mca_classifier)
-    # TODO: Extract actually correct features
-    # milestone: Figure out LIME
     return set([name for name, _ in exp.as_list()])
 
 if __name__ == '__main__':

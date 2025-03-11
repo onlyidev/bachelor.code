@@ -4,8 +4,7 @@ r"""
 import mlflow
 import ast
 import logging
-import pandas as pd
-from lime.lime_tabular import LimeTabularExplainer
+from helpers.lime import LimeExplainer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,23 +29,29 @@ class LimeVerify:
             logger.info(f"Loaded {len(self.__normal)} normal features", extra={"run_id": self.__run_id})
             
     def __initExplainer(self, path):
-        mca_data = pd.read_csv(path)
-        self.__explainer = LimeTabularExplainer(mca_data.values[:,:-1], feature_names=mca_data.columns[:-1], class_names=['Benign', 'Malicious'], verbose=True, sample_around_instance=True)
+        self.__explainer = LimeExplainer(path)
         logger.info("Loaded explainer", extra={"run_id": self.__run_id})
             
     def transform(self, input):
         return self.__mca.predict(input)
     
-    # TODO Determine for which class the explanations are meant
     # Issue URL: https://github.com/onlyidev/bachelor.code/issues/3
     # milestone: Figure out LIME
     def verify(self, input, outputResult=False):
-        exp = self.__explainer.explain_instance(input, self.__mca_classifier.predict_proba, labels=(0,))
+        """Verifies if the input is benign (only meant to be used after initial classification)
+
+        Args:
+            input (feature vector): The input to be verified (should be transformed by MCA if required)
+            outputResult (bool, optional): Show LIME explanation (in notebook). Defaults to False 
+
+        Returns:
+            bool: True if the input is benign, False otherwise
+        """        
+        exp = self.__explainer.explain_important(input, self.__mca_classifier)
         if outputResult:
             exp.show_in_notebook()
-        # features = set([name for name, _ in filter(lambda pair: pair[1] > 0, exp.as_list())])
-        # isMal = not features.issubset(self.__normal)
-        # print(isMal)
-        # if isMal:
-        #     logger.info("Non-standard features detected. Marking as malicious", extra={"run_id": self.__run_id})
-        return exp
+        features = set([name for name, _ in exp.as_list()])
+        isBenign = features.issubset(self.__normal)
+        if not isBenign:
+            logger.info("Non-standard features detected. Marking as malicious", extra={"run_id": self.__run_id})
+        return isBenign
