@@ -6,7 +6,7 @@ import numpy as np
 import dvc.api
 import pandas as pd
 import mlflow
-from lime.lime_tabular import LimeTabularExplainer
+import helpers.lime
 from tqdm import tqdm
 import multiprocessing
 import warnings
@@ -15,24 +15,22 @@ warnings.filterwarnings("ignore")
 #%% Parameters
 params = dvc.api.params_show()
 mca_data = pd.read_csv(params["train"]["mca"])
-data_ben = np.load(f"{params['train']['benign']}")
-df_ben = pd.DataFrame(data_ben)
 #%% Load models
-explainer = LimeTabularExplainer(mca_data.values[:,:-1], feature_names=mca_data.columns[:-1], class_names=['Benign', 'Malicious'])
+explainer = helpers.lime.LimeExplainer(params["train"]["mca"])
 mca = mlflow.pyfunc.load_model(f"runs:/{params['experiment']['id']}/mca")
 mca_classifier = mlflow.sklearn.load_model(f"runs:/{params['experiment']['id']}/mca_classifier")
 
 #%% Transform dataset
-print("Transforming benign dataset to MCA values")
-df = mca.predict(df_ben)
+print("Selecting benign MCA features")
+df = mca_data.loc[mca_data["class"] == 0].iloc[:,:-1]
 #%% Get set
 normal = set()
 
 def process_example(example):
-    exp = explainer.explain_instance(example, mca_classifier.predict_proba)
+    exp = explainer.explain_important(example, mca_classifier)
     # TODO: Extract actually correct features
     # milestone: Figure out LIME
-    return set([name for name, _ in filter(lambda pair: pair[1] > 0, exp.as_list())])
+    return set([name for name, _ in exp.as_list()])
 
 if __name__ == '__main__':
     print("Processing benign examples")

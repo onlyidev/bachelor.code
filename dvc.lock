@@ -133,8 +133,8 @@ stages:
     outs:
     - path: data/MCA.csv
       hash: md5
-      md5: c6945cf768361d6e18ea9b4406a55e6d
-      size: 73614
+      md5: 1ad2cb383da96b49900489e5cc335059
+      size: 43245
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
@@ -164,8 +164,8 @@ stages:
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: c6945cf768361d6e18ea9b4406a55e6d
-      size: 73614
+      md5: 1ad2cb383da96b49900489e5cc335059
+      size: 43245
     - path: data/train/ben.npy
       hash: md5
       md5: e78244d64fd8f808dcb4b77dec4baa0b
@@ -184,5 +184,5 @@ stages:
     outs:
     - path: data/normal_features.txt
       hash: md5
-      md5: c2976aa43265cf2862a4a3705add079e
-      size: 222
+      md5: 5cfe5462367e8a158bb03c9ba6fdc53f
+      size: 35

@@ -10,20 +10,22 @@ params = dvc.api.params_show()
 run_id = params["experiment"]["id"]
 params = params["train"]
 # Load the .npy file
+# TODO Add logging and ensure no arbitrary head values are used
+#
 data_benign = np.load(f"{params['benign']}", mmap_mode='r')
-df_benign = pd.DataFrame(data_benign).head(100)
+df_benign = pd.DataFrame(data_benign)
 
 data_malicious = np.load(f"{params['malware']}", mmap_mode='r')
-df_malicious = pd.DataFrame(data_malicious).head(100)
+df_malicious = pd.DataFrame(data_malicious)
 
 df = pd.concat([df_benign, df_malicious], ignore_index=True)
 
 #%%
-
+# TODO Add inertia calculations / graph
+#
 mca = prince.MCA(n_components=10, n_iter=3)
 mca = mca.fit(df)
 transformed_data = mca.transform(df)
-# transformed_data.columns = ["Low API Density", "High API Density"]
 
 # Create labels for each class
 labels = [0] * len(df_benign) + [1] * len(df_malicious)
