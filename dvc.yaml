@@ -35,7 +35,6 @@ stages:
     deps:
     - ${train.benign}
     - ${train.malware}
-    - dynamic.yaml
     params:
     - dynamic.yaml:
       - experiment.id
@@ -52,7 +51,6 @@ stages:
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
-    - dynamic.yaml
     - ${train.mca}
     params:
     - train.mca
@@ -64,7 +62,6 @@ stages:
     deps:
     - ${train.benign}
     - ${train.mca}
-    - dynamic.yaml
     outs:
     - ${train.normal_features}:
         persist: true
@@ -74,3 +71,18 @@ stages:
     - train.normal_features
     - dynamic.yaml:
       - experiment.id
+  experiment_base:
+    cmd: python experiment.py normal
+    deps:
+      - ${valid.benign}
+      - ${valid.malware}
+    params:
+      - valid.benign
+      - valid.malware
+      - metrics.normal
+      - dynamic.yaml:
+        - experiment.id
+    metrics:
+      - ${metrics.normal}
+    outs:
+      - ${metrics.normal_confusion}

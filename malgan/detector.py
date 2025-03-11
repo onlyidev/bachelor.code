@@ -40,7 +40,7 @@ class BlackBoxDetector:
         DecisionTree = DecisionTreeClassifier()
         LogisticRegression = LogisticRegression(solver='lbfgs', max_iter=int(1e6))
         MultiLayerPerceptron = MLPClassifier()
-        RandomForest = RandomForestClassifier(n_estimators=100)
+        RandomForest = RandomForestClassifier(n_estimators=1000)
         SVM = SVC(gamma="auto")
 
         @classmethod
