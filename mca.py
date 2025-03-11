@@ -11,6 +11,7 @@ run_id = params["experiment"]["id"]
 params = params["train"]
 # Load the .npy file
 # TODO Add logging and ensure no arbitrary head values are used
+# Issue URL: https://github.com/onlyidev/bachelor.code/issues/5
 #
 data_benign = np.load(f"{params['benign']}", mmap_mode='r')
 df_benign = pd.DataFrame(data_benign)
@@ -22,6 +23,7 @@ df = pd.concat([df_benign, df_malicious], ignore_index=True)
 
 #%%
 # TODO Add inertia calculations / graph
+# Issue URL: https://github.com/onlyidev/bachelor.code/issues/4
 #
 mca = prince.MCA(n_components=10, n_iter=3)
 mca = mca.fit(df)
