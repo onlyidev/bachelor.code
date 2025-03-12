@@ -149,8 +149,13 @@ stages:
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: 1ad2cb383da96b49900489e5cc335059
-      size: 43245
+      md5: 18494f6ae062248821b7f954be76e4d1
+      size: 348862
+    outs:
+    - path: outs/mca_scatter.html
+      hash: md5
+      md5: 110f60d8add5a8b8cee6d83fc5640499
+      size: 444803
   extract_normal_features:
     cmd: python lime_normal.py
     deps:

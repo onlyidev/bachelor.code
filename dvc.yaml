@@ -55,6 +55,12 @@ stages:
     outs:
     - ${train.mca}:
         persist: true
+  graph_mca:
+    cmd: python scripts/graph_mca.py
+    deps:
+      - ${train.mca}
+    outs:
+      - outs/mca_scatter.html
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:

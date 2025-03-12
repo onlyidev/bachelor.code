@@ -71,7 +71,7 @@ class NormalCase(Experiment):
     def run(self):
         y_pred = self.detector.predict(self.X)
         report = classification_report(self.y, y_pred)
-        confusion = confusion_matrix(self.y, y_pred)
+        confusion = confusion_matrix(self.y, y_pred, normalize='true')
         print(report)
         disp = ConfusionMatrixDisplay(confusion_matrix=confusion, display_labels=['Benign', 'Malware'])
         disp.plot().figure_.savefig(m_params["normal_confusion"])
