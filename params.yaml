@@ -4,15 +4,15 @@ split:
   benign_dir: data/raw/sleipnir/benign
   malware_dir: data/raw/sleipnir/malicious
 train:
-  Z: 10
+  Z: 100
   batch_size: 32
-  num_epochs: 1
+  num_epochs: 32
   benign: data/train/ben.npy
   malware: data/train/mal.npy
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
   name: Bachelor_2000
-  estimators: 100
+  estimators: 200
   head: 1000
 valid:
   benign: data/valid/ben.npy

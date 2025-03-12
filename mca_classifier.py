@@ -8,6 +8,9 @@ import dvc.api
 import sklearn.ensemble
 import pandas as pd
 import helpers.experiment
+import logging
+
+logger = logging.getLogger()
 
 #%%
 params = dvc.api.params_show()
@@ -20,5 +23,7 @@ with helpers.experiment.startExperiment(run_id=params["experiment"]["id"]):
     helpers.experiment.logs()
     mlflow.log_params(t_params)
     rf = sklearn.ensemble.RandomForestClassifier(n_estimators=t_params["estimators"])
+    logger.info("Begin fit")
     rf.fit(mca_data.iloc[:,:-1], mca_data.iloc[:,-1])
+    logger.info("End fit")
     mlflow.sklearn.log_model(rf, "mca_classifier", registered_model_name="MCA_classifier", input_example=mca_data.iloc[:,:-1].head(1))

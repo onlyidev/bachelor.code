@@ -1,5 +1,7 @@
 import dvc.api
 
-def load_params():
+def load_params(*types) -> list[dict]:
+    if not set(types).issubset({"experiment", "metrics", "split", "train", "valid"}):
+        raise ValueError("Invalid parameter types")
     params = dvc.api.params_show()
-    return [params["experiment"], params["metrics"], params["split"], params["train"], params["valid"]]
+    return [params[t] for t in types]

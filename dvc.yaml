@@ -30,6 +30,17 @@ stages:
     outs:
     - dynamic.yaml:
         persist: true
+  train_detector:
+    cmd: python train_detector
+    deps:
+      - ${train.benign}
+      - ${train.malware}
+    params:
+      - split.random_state
+      - train.benign
+      - train.malware
+      - dynamic.yaml:
+        - experiment.id
   train_mca:
     cmd: python mca.py
     deps:
@@ -44,10 +55,6 @@ stages:
     outs:
     - ${train.mca}:
         persist: true
-  graph_mca:
-    cmd: python scripts/graph_mca.py
-    deps:
-    - ${train.mca}
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:

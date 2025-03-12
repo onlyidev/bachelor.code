@@ -12,6 +12,7 @@ import logging
 import abc
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 import json
+import sklearn.ensemble
 
 logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger()
@@ -79,7 +80,7 @@ class NormalCase(Experiment):
         
         
 if __name__ == '__main__':
-    e_params, m_params, *_, v_params = load_params()
+    e_params, m_params, t_params, v_params = load_params("experiment", "metrics", "train", "valid")
     args = sys.argv[1:]
     if len(args) < 1:
         raise ValueError("Please provide the experiment type")
