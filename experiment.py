@@ -12,7 +12,7 @@ import logging
 import abc
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, ConfusionMatrixDisplay
 import json
-import sklearn.ensemble
+import limeVerify
 
 logging.basicConfig(level = logging.INFO)
 logger = logging.getLogger()
@@ -77,6 +77,38 @@ class NormalCase(Experiment):
         disp.plot().figure_.savefig(m_params["normal_confusion"])
         with open(m_params["normal"], "w") as f:
             f.write(self.metrics(y_pred))
+            
+class LimeCase(Experiment):
+    
+    @timing
+    def __init__(self):
+        super().__init__()
+        self.verifier = limeVerify.LimeVerify(e_params["id"], t_params["normal_features"], t_params["mca"])
+    
+    @log
+    @timing
+    def verify(self, preds):
+        pdf = pd.DataFrame(preds)
+        df = pdf[pdf[0] == 0]
+        features = self.X[self.X.index.isin(df.index)]
+        t = self.verifier.transform(features)
+        v = t.apply(lambda x: self.verifier.verify(x.values), axis=1)
+        vt = v.transform(lambda x: 0 if x else 1)
+        pdf.update(vt, overwrite=True)
+        return pdf.values
+    
+    @log
+    @timing
+    def run(self):
+        y_pred = self.detector.predict(self.X) # Original prediction
+        y_pred = self.verify(y_pred)
+        report = classification_report(self.y, y_pred)
+        confusion = confusion_matrix(self.y, y_pred, normalize='true')
+        print(report)
+        disp = ConfusionMatrixDisplay(confusion_matrix=confusion, display_labels=['Benign', 'Malware'])
+        disp.plot().figure_.savefig(m_params["lime_confusion"])
+        with open(m_params["lime"], "w") as f:
+            f.write(self.metrics(y_pred))
         
         
 if __name__ == '__main__':
@@ -87,5 +119,8 @@ if __name__ == '__main__':
     if args[0] == "normal":
         logger.info("Running normal case")
         NormalCase().run()
+    if args[0] == "lime":
+        logger.info("Running LIME case")
+        LimeCase().run()
     else:
         raise ValueError("Invalid experiment type")

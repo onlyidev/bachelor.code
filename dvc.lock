@@ -206,3 +206,35 @@ stages:
       hash: md5
       md5: 2a733e2e17de16647f8d85812b2f6794
       size: 19132
+  experiment_lime:
+    cmd: python experiment.py lime
+    deps:
+    - path: data/MCA.csv
+      hash: md5
+      md5: 18494f6ae062248821b7f954be76e4d1
+      size: 348862
+    - path: data/valid/ben.npy
+      hash: md5
+      md5: 584bd545c3e6a5098737aded01f778fb
+      size: 18208928
+    - path: data/valid/mal.npy
+      hash: md5
+      md5: 55871e5d2a24de8bc847ef2b085f99a1
+      size: 18208928
+    params:
+      params.yaml:
+        train.mca: data/MCA.csv
+        train.normal_features: data/normal_features.txt
+        valid.benign: data/valid/ben.npy
+        valid.malware: data/valid/mal.npy
+      dynamic.yaml:
+        experiment.id: 8415fe32e45b41058f5bd36efeacae12
+    outs:
+    - path: metrics/lime.json
+      hash: md5
+      md5: 31ec42c7ccc1c431ca4910cfc4ec4eec
+      size: 857
+    - path: metrics/lime.png
+      hash: md5
+      md5: 5264e2fd08eebaf138a0e612d37e8b3e
+      size: 20281

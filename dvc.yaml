@@ -99,3 +99,20 @@ stages:
       - ${metrics.normal}
     outs:
       - ${metrics.normal_confusion}
+  experiment_lime:
+    cmd: python experiment.py lime
+    deps:
+      - ${valid.benign}
+      - ${valid.malware}
+      - ${train.mca}
+    params:
+      - valid.benign
+      - valid.malware
+      - train.mca
+      - train.normal_features
+      - dynamic.yaml:
+        - experiment.id
+    metrics:
+      - ${metrics.lime}
+    outs:
+      - ${metrics.lime_confusion}

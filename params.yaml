@@ -19,4 +19,6 @@ valid:
   malware: data/valid/mal.npy
 metrics:
   normal: metrics/normal.json
+  lime: metrics/lime.json
   normal_confusion: metrics/normal.png
+  lime_confusion: metrics/lime.png
