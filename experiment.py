@@ -21,7 +21,7 @@ class Experiment:
     @timing
     def __init__(self):
         self.__loadData()
-        self.detector = mlflow.sklearn.load_model(f"runs:/{e_params['id']}/BB")
+        self.detector = mlflow.sklearn.load_model(f"runs:/{d_params['id']}/BB")
     
     @log
     def __loadData(self, random_state=42):
@@ -37,7 +37,7 @@ class Experiment:
         
     @log
     def __obfuscateData(self, data):
-        gen = mlflow.pyfunc.load_model(f"runs:/{e_params['id']}/generator")
+        gen = mlflow.pyfunc.load_model(f"runs:/{o_params['id']}/generator")
         return gen.predict(data)
     
     def __getY(self, keepObfuscated=False):
@@ -90,7 +90,7 @@ class LimeCase(Experiment):
     @timing
     def __init__(self):
         super().__init__()
-        self.verifier = limeVerify.LimeVerify(e_params["id"], t_params["normal_features"], t_params["mca"])
+        self.verifier = limeVerify.LimeVerify(dict(mca = mca_params["id"], mca_cls = mca_cls_params["id"]), t_params["normal_features"], t_params["mca"])
     
     @log
     @timing
@@ -127,7 +127,8 @@ class LimeCase(Experiment):
         logger.info(self.verifier.transform.cache_info())
         
 if __name__ == '__main__':
-    e_params, m_params, t_params, v_params = load_params("experiment", "metrics", "train", "valid")
+    d_params, o_params, m_params, t_params, v_params, mca_params, mca_cls_params = load_params(
+        "detector", "malgan", "metrics", "train", "valid", "mca", "mca_classifier")
     args = sys.argv[1:]
     if len(args) < 1:
         raise ValueError("Please provide the experiment type")

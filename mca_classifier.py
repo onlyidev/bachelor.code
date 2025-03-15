@@ -15,15 +15,14 @@ logger = logging.getLogger()
 #%%
 params = dvc.api.params_show()
 t_params = params["train"]
-e_params = params["experiment"]
 mca_data = pd.read_csv(params["train"]["mca"])
 
 #%%
-with helpers.experiment.startExperiment(run_id=params["experiment"]["id"]):
+with helpers.experiment.startExperiment(name=t_params["name"], run_name="mca_classifier") as exp:
     helpers.experiment.logs()
-    mlflow.log_params(t_params)
     rf = sklearn.ensemble.RandomForestClassifier(n_estimators=t_params["estimators"])
     logger.info("Begin fit")
     rf.fit(mca_data.iloc[:,:-1], mca_data.iloc[:,-1])
     logger.info("End fit")
     mlflow.sklearn.log_model(rf, "mca_classifier", registered_model_name="MCA_classifier", input_example=mca_data.iloc[:,:-1].head(1))
+    helpers.experiment.exportRunYaml(key="mca_classifier")

@@ -3,22 +3,22 @@ r"""
 """
 #%% Imports
 import numpy as np
-import dvc.api
 import pandas as pd
 import mlflow
 import helpers.lime
 from tqdm import tqdm
 import multiprocessing
 import warnings
+from helpers.params import load_params
 
 warnings.filterwarnings("ignore")
 #%% Parameters
-params = dvc.api.params_show()
-mca_data = pd.read_csv(params["train"]["mca"])
+t_params, mca_params, mca_cls_params = load_params("train", "mca", "mca_classifier")
+mca_data = pd.read_csv(t_params["mca"])
 #%% Load models
-explainer = helpers.lime.LimeExplainer(params["train"]["mca"])
-mca = mlflow.pyfunc.load_model(f"runs:/{params['experiment']['id']}/mca")
-mca_classifier = mlflow.sklearn.load_model(f"runs:/{params['experiment']['id']}/mca_classifier")
+explainer = helpers.lime.LimeExplainer(t_params["mca"])
+mca = mlflow.pyfunc.load_model(f"runs:/{mca_params['id']}/mca")
+mca_classifier = mlflow.sklearn.load_model(f"runs:/{mca_cls_params['id']}/mca_classifier")
 
 #%% Transform dataset
 print("Selecting benign MCA features")
@@ -40,5 +40,5 @@ if __name__ == '__main__':
             iter.set_description(f"Combining results ({len(normal)} features)")
     
 #%% Save set
-with open(params["train"]["normal_features"], "w") as f:
+with open(t_params["normal_features"], "w") as f:
     f.write(str(normal))

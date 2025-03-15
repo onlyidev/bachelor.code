@@ -23,30 +23,30 @@ class HashableType():
         return self.__key == other.__key
 
 class LimeVerify:
-    def __init__(self, run_id, normal_features_path, mca_data_path):
-        self.__run_id = run_id
+    def __init__(self, run_ids, normal_features_path, mca_data_path):
+        self.__run_ids = run_ids
         self.__loadModels()
         self.__loadNormalFeatures(normal_features_path)
         self.__initExplainer(mca_data_path)
         
     def __loadModels(self):
-        self.__mca = mlflow.pyfunc.load_model(f"runs:/{self.__run_id}/mca")
-        logger.info("Loaded MCA", extra={"run_id": self.__run_id})
-        self.__mca_classifier = mlflow.sklearn.load_model(f"runs:/{self.__run_id}/mca_classifier")
-        logger.info("Loaded MCA Classifier", extra={"run_id": self.__run_id})
+        self.__mca = mlflow.pyfunc.load_model(f"runs:/{self.__run_ids.mca}/mca")
+        logger.info("Loaded MCA", extra={"run_id": self.__run_ids.mca})
+        self.__mca_classifier = mlflow.sklearn.load_model(f"runs:/{self.__run_ids.mca_cls}/mca_classifier")
+        logger.info("Loaded MCA Classifier", extra={"run_id": self.__run_ids.mca_cls})
         
     def __loadNormalFeatures(self, path):
         with open(path, "r") as f:
             self.__normal = ast.literal_eval(f.read())
-            logger.info(f"Loaded {len(self.__normal)} normal features", extra={"run_id": self.__run_id})
+            logger.info(f"Loaded {len(self.__normal)} normal features")
             
     def __initExplainer(self, path):
         self.__explainer = LimeExplainer(path)
-        logger.info("Loaded explainer", extra={"run_id": self.__run_id})
+        logger.info("Loaded explainer")
          
     @lru_cache(maxsize=None)
     def transform(self, input: HashableType):
-        logger.info("Transforming input to MCA", extra={"run_id": self.__run_id})
+        logger.info("Transforming input to MCA")
         return self.__mca.predict(input.obj)
     
     # Issue URL: https://github.com/onlyidev/bachelor.code/issues/3
@@ -67,5 +67,5 @@ class LimeVerify:
         features = set([name for name, _ in exp.as_list()])
         isBenign = features.issubset(self.__normal)
         if not isBenign:
-            logger.info("Non-standard features detected. Marking as malicious", extra={"run_id": self.__run_id})
+            logger.info("Non-standard features detected. Marking as malicious")
         return isBenign

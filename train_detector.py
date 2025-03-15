@@ -6,9 +6,9 @@ from helpers.params import load_params
 from helpers.experiment import *
 
 logger = logging.getLogger()
-s_params, t_params, e_params = load_params("split", "train", "experiment")
+s_params, t_params = load_params("split", "train")
 
-with startExperiment(run_id=e_params["id"]) as exp:
+with startExperiment(name=t_params["name"], run_name="detector") as exp:
     logs()
     detector = sklearn.ensemble.RandomForestClassifier(n_estimators=t_params["estimators"])
     df_ben = pd.DataFrame(np.load(t_params["benign"]))
@@ -23,3 +23,4 @@ with startExperiment(run_id=e_params["id"]) as exp:
     logger.info("Detector fitted")
     
     mlflow.sklearn.log_model(detector, "BB", registered_model_name="Malware detector", input_example=df.drop(columns=['class']).head(1))
+    exportRunYaml(key="detector")

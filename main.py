@@ -21,7 +21,7 @@ from torch import nn
 
 import mlflow
 import helpers.experiment
-import dvc.api
+from helpers.params import load_params
 
 def parse_args() -> argparse.Namespace:
     r"""
@@ -134,6 +134,7 @@ def load_dataset(file_path: Union[str, Path], y: int) -> MalwareDataset:
 def main():
     args = parse_args()
     setup_logger(args.q)
+    t_params, = load_params("train")
 
     MalGAN.MALWARE_BATCH_SIZE = args.batch_size
 
@@ -145,7 +146,7 @@ def main():
                     g_hidden=args.activation,
                     detector_type=args.detector)
     
-    with helpers.experiment.startExperiment(dvc.api.params_show()["train"]["name"]) as exp:
+    with helpers.experiment.startExperiment(t_params["name"], run_name="malgan") as exp:
         mlflow.autolog()
         mlflow.enable_system_metrics_logging() 
         mlflow.log_params(vars(args))
@@ -155,7 +156,7 @@ def main():
         if args.print_results:
             print(results)
         mlflow.pytorch.log_model(malgan._gen, "generator", registered_model_name="MalGAN Z Generator")
-        helpers.experiment.exportRunYaml()
+        helpers.experiment.exportRunYaml(key="malgan")
 
 
 if __name__ == "__main__":

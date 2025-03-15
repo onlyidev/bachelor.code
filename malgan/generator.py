@@ -41,6 +41,7 @@ class Generator(nn.Module):
         self._layers, dim = nn.Sequential(), [M + self._Z] + hidden_size
         for i, (d_in, d_out) in enumerate(zip(dim[:-1], dim[1:])):
             self._layers.add_module("FF%02d" % i, nn.Sequential(nn.Linear(d_in, d_out), g))
+            self._layers.add_module("Drop%02d" % i, nn.Dropout(0.5))
 
         # Last layer is always sigmoid
         layer = nn.Sequential(nn.Linear(dim[-1], M), nn.Sigmoid())

@@ -15,7 +15,7 @@ stages:
     - split.benign_dir
     - split.malware_dir
   train_malgan:
-    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --gen-hidden-sizes 10000 1000 512 256 512 1000 10000 --activation ${train.activation}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --gen-hidden-sizes 1000 512 256 512 1000 --activation ${train.activation}
       ${train.malware}
     deps:
     - ${train.benign}
@@ -28,9 +28,6 @@ stages:
     - train.malware
     - train.name
     - train.activation
-    outs:
-    - dynamic.yaml:
-        persist: true
   train_detector:
     cmd: python train_detector.py
     deps:
@@ -40,16 +37,12 @@ stages:
       - split.random_state
       - train.benign
       - train.malware
-      - dynamic.yaml:
-        - experiment.id
   train_mca:
     cmd: python mca.py
     deps:
     - ${train.benign}
     - ${train.malware}
     params:
-    - dynamic.yaml:
-      - experiment.id
     - train.mca
     - train.estimators
     - train.head
@@ -69,13 +62,12 @@ stages:
     params:
     - train.mca
     - train.estimators
-    - dynamic.yaml:
-      - experiment.id
   extract_normal_features:
     cmd: python lime_normal.py
     deps:
     - ${train.benign}
     - ${train.mca}
+    - dynamic.yaml
     outs:
     - ${train.normal_features}:
         persist: true
@@ -84,18 +76,21 @@ stages:
     - train.mca
     - train.normal_features
     - dynamic.yaml:
-      - experiment.id
+      - mca.id
+      - mca_classifier.id
   experiment_base:
     cmd: PYTHONHASHSEED=0 python experiment.py normal
     deps:
       - ${valid.benign}
       - ${valid.malware}
+      - dynamic.yaml
     params:
       - valid.benign
       - valid.malware
       - metrics.normal
       - dynamic.yaml:
-        - experiment.id
+        - malgan.id
+        - detector.id
     metrics:
       - ${metrics.normal}
     outs:
@@ -106,13 +101,17 @@ stages:
       - ${valid.benign}
       - ${valid.malware}
       - ${train.mca}
+      - dynamic.yaml
     params:
       - valid.benign
       - valid.malware
       - train.mca
       - train.normal_features
       - dynamic.yaml:
-        - experiment.id
+        - malgan.id
+        - detector.id
+        - mca.id
+        - mca_classifier.id
     metrics:
       - ${metrics.lime}
       - ${metrics.lime_obf}
