@@ -85,7 +85,8 @@ stages:
       md5: 55871e5d2a24de8bc847ef2b085f99a1
       size: 18208928
   train_malgan:
-    cmd: python main.py 100 32 32 data/train/ben.npy data/train/mal.npy
+    cmd: python main.py 10000 32 100 data/train/ben.npy --gen-hidden-sizes 1000 512
+      256 512 1000 --activation tanh data/train/mal.npy
     deps:
     - path: data/train/ben.npy
       hash: md5
@@ -97,16 +98,17 @@ stages:
       size: 72835328
     params:
       params.yaml:
-        train.Z: 100
+        train.Z: 10000
+        train.activation: tanh
         train.batch_size: 32
         train.benign: data/train/ben.npy
         train.malware: data/train/mal.npy
         train.name: Bachelor_2000
-        train.num_epochs: 32
+        train.num_epochs: 100
     outs:
     - path: dynamic.yaml
       hash: md5
-      md5: 4c78806661ce8f6d04c08d50552f5a6a
+      md5: 3a8975141d37942d3363a2a15526a6e8
       size: 51
   train_mca:
     cmd: python mca.py
