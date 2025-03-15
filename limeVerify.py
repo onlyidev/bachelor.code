@@ -30,10 +30,10 @@ class LimeVerify:
         self.__initExplainer(mca_data_path)
         
     def __loadModels(self):
-        self.__mca = mlflow.pyfunc.load_model(f"runs:/{self.__run_ids.mca}/mca")
-        logger.info("Loaded MCA", extra={"run_id": self.__run_ids.mca})
-        self.__mca_classifier = mlflow.sklearn.load_model(f"runs:/{self.__run_ids.mca_cls}/mca_classifier")
-        logger.info("Loaded MCA Classifier", extra={"run_id": self.__run_ids.mca_cls})
+        self.__mca = mlflow.pyfunc.load_model(f"runs:/{self.__run_ids['mca']}/mca")
+        logger.info("Loaded MCA", extra={"run_id": self.__run_ids['mca']})
+        self.__mca_classifier = mlflow.sklearn.load_model(f"runs:/{self.__run_ids['mca_cls']}/mca_classifier")
+        logger.info("Loaded MCA Classifier", extra={"run_id": self.__run_ids['mca_cls']})
         
     def __loadNormalFeatures(self, path):
         with open(path, "r") as f:
