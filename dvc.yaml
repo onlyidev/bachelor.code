@@ -85,7 +85,7 @@ stages:
     - dynamic.yaml:
       - experiment.id
   experiment_base:
-    cmd: python experiment.py normal
+    cmd: PYTHONHASHSEED=0 python experiment.py normal
     deps:
       - ${valid.benign}
       - ${valid.malware}
@@ -100,7 +100,7 @@ stages:
     outs:
       - ${metrics.normal_confusion}
   experiment_lime:
-    cmd: python experiment.py lime
+    cmd: PYTHONHASHSEED=0 python experiment.py lime
     deps:
       - ${valid.benign}
       - ${valid.malware}
@@ -114,5 +114,7 @@ stages:
         - experiment.id
     metrics:
       - ${metrics.lime}
+      - ${metrics.lime_obf}
     outs:
       - ${metrics.lime_confusion}
+      - ${metrics.lime_confusion_obf}

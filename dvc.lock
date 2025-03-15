@@ -207,7 +207,7 @@ stages:
       md5: 2a733e2e17de16647f8d85812b2f6794
       size: 19132
   experiment_lime:
-    cmd: python experiment.py lime
+    cmd: PYTHONHASHSEED=0 python experiment.py lime
     deps:
     - path: data/MCA.csv
       hash: md5
@@ -232,9 +232,9 @@ stages:
     outs:
     - path: metrics/lime.json
       hash: md5
-      md5: 31ec42c7ccc1c431ca4910cfc4ec4eec
-      size: 857
+      md5: 2a15b6857f019d39d0717e85cb2244db
+      size: 913
     - path: metrics/lime.png
       hash: md5
-      md5: 5264e2fd08eebaf138a0e612d37e8b3e
-      size: 20281
+      md5: ac85b5c6cc36ee2d541161303453de93
+      size: 20493

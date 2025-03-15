@@ -20,5 +20,7 @@ valid:
 metrics:
   normal: metrics/normal.json
   lime: metrics/lime.json
+  lime_obf: metrics/lime_obf.json
   normal_confusion: metrics/normal.png
   lime_confusion: metrics/lime.png
+  lime_confusion_obf: metrics/lime_obf.png
