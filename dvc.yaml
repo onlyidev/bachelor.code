@@ -15,7 +15,7 @@ stages:
     - split.benign_dir
     - split.malware_dir
   train_malgan:
-    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --gen-hidden-sizes 10000 1000 512 256 512 1000 10000 --activation ${train.activation}
       ${train.malware}
     deps:
     - ${train.benign}
@@ -27,11 +27,12 @@ stages:
     - train.benign
     - train.malware
     - train.name
+    - train.activation
     outs:
     - dynamic.yaml:
         persist: true
   train_detector:
-    cmd: python train_detector
+    cmd: python train_detector.py
     deps:
       - ${train.benign}
       - ${train.malware}
