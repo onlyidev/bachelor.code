@@ -4,7 +4,7 @@ split:
   benign_dir: data/raw/sleipnir/benign
   malware_dir: data/raw/sleipnir/malicious
 train:
-  Z: 10000
+  Z: 1000
   batch_size: 32
   num_epochs: 300
   activation: tanh
@@ -12,9 +12,11 @@ train:
   malware: data/train/mal.npy
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
-  name: Bachelor_2000_split
+  name: Bachelor_2000_10k-Features
   estimators: 100
   head: 1000
+  num_features: 10000
+  mca_components: 20
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy

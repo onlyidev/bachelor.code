@@ -5,7 +5,8 @@ from sklearn.model_selection import train_test_split
 import dvc.api
 from tqdm import tqdm
 
-def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid, test_size=0.2, random_state=42, limit=None):
+
+def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid, test_size=0.2, random_state=42, limit=None, num_features=None):
     """
     Aggregates tensors from multiple pickle files in a directory, splits the aggregated
     tensor into training and validation sets, and saves the resulting sets to separate
@@ -20,13 +21,15 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
         random_state (int): Random state for reproducible splitting.
     """
     tensors = []
-    files = os.listdir(input_dir) if limit is None else os.listdir(input_dir)[:limit]
+    files = os.listdir(input_dir) if limit is None else os.listdir(
+        input_dir)[:limit]
     for filename in tqdm(files, desc=f"Processing {input_dir}"):
         file_path = os.path.join(input_dir, filename)
         try:
             with open(file_path, 'rb') as f:
                 tensor = pickle.load(f)
-                tensors += tensor
+                tensors += tensor if num_features is None else tensor[:,
+                                                                      :num_features]
         except FileNotFoundError:
             print(f"Error: File not found at {file_path}")
             return
@@ -40,14 +43,15 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
 
     # Aggregate the tensors
     try:
-        aggregated_tensor = np.array(tensors) 
+        aggregated_tensor = np.array(tensors)
     except Exception as e:
         print(f"Error: Could not aggregate the tensors. {e}")
         return
 
     # Split the aggregated tensor into training and validation sets
     try:
-        X_train, X_val = train_test_split(aggregated_tensor, test_size=test_size, random_state=random_state)
+        X_train, X_val = train_test_split(
+            aggregated_tensor, test_size=test_size, random_state=random_state)
     except Exception as e:
         print(f"Error: Could not split the aggregated tensor. {e}")
         return
@@ -59,7 +63,8 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
             np.save(f, X_train)
         print(f"Training set saved to {train_output_file}")
     except Exception as e:
-        print(f"Error: Could not save training set to {train_output_file}. {e}")
+        print(
+            f"Error: Could not save training set to {train_output_file}. {e}")
         return
 
     # Save the validation set
@@ -69,13 +74,17 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
             np.save(f, X_val)
         print(f"Validation set saved to {val_output_file}")
     except Exception as e:
-        print(f"Error: Could not save validation set to {val_output_file}. {e}")
+        print(
+            f"Error: Could not save validation set to {val_output_file}. {e}")
         return
+
 
 if __name__ == "__main__":
     params = dvc.api.params_show()
     s_params = params["split"]
     t_params = params["train"]
     v_params = params["valid"]
-    aggregate_and_split_tensors(s_params["benign_dir"], t_params["benign"], v_params["benign"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"])
-    aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"], random_state=s_params["random_state"], limit=t_params["head"])
+    aggregate_and_split_tensors(s_params["benign_dir"], t_params["benign"], v_params["benign"], test_size=s_params["test_size"],
+                                random_state=s_params["random_state"], limit=t_params["head"], num_features=t_params["num_features"])
+    aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"],
+                                random_state=s_params["random_state"], limit=t_params["head"], num_features=t_params["num_features"])

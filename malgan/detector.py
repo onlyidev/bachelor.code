@@ -25,6 +25,7 @@ from sklearn.svm import SVC
 
 import torch
 from torch import Tensor
+import dvc.api
 
 TorchOrNumpy = Union[np.ndarray, Tensor]
 
@@ -40,7 +41,7 @@ class BlackBoxDetector:
         DecisionTree = DecisionTreeClassifier()
         LogisticRegression = LogisticRegression(solver='lbfgs', max_iter=int(1e6))
         MultiLayerPerceptron = MLPClassifier()
-        RandomForest = RandomForestClassifier(n_estimators=1000)
+        RandomForest = RandomForestClassifier(n_estimators=dvc.api.params_show()["train"]["estimators"])
         SVM = SVC(gamma="auto")
 
         @classmethod

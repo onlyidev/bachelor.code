@@ -28,6 +28,7 @@ stages:
     - train.malware
     - train.name
     - train.activation
+    - train.estimators
   train_detector:
     cmd: python train_detector.py
     deps:
@@ -46,6 +47,7 @@ stages:
     - train.mca
     - train.estimators
     - train.head
+    - train.mca_components
     outs:
     - ${train.mca}:
         persist: true
