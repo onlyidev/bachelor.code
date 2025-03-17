@@ -27,7 +27,7 @@ df = pd.concat([df_benign, df_malicious], ignore_index=True)
 # Issue URL: https://github.com/onlyidev/bachelor.code/issues/4
 #
 with startExperiment(t_params["name"], run_name="mca") as exp:
-    mca = prince.MCA(n_components=t_params["mca_components"], n_iter=2)
+    mca = prince.MCA(n_components=t_params["mca_components"], n_iter=3)
     mca = mca.fit(df)
     inertia = max(mca.cumulative_percentage_of_variance_)
     logger.info(f"Explained inertia: {inertia}",)

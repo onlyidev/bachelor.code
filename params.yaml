@@ -1,10 +1,11 @@
 split:
   test_size: 0.2
   random_state: 42
+  unique_ratio: 0.7
   benign_dir: data/raw/sleipnir/benign
   malware_dir: data/raw/sleipnir/malicious
 train:
-  Z: 1000
+  Z: 60
   batch_size: 32
   num_epochs: 300
   activation: tanh
@@ -12,14 +13,15 @@ train:
   malware: data/train/mal.npy
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
-  name: Bachelor_2000_10k-Features
+  name: Bachelor_10k_200-Features
   estimators: 100
-  head: 1000
-  num_features: 10000
-  mca_components: 20
+  head: 10000
+  num_features: 200
+  mca_components: 10
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
+  lime_scale: 100000
 metrics:
   normal: metrics/normal.json
   lime: metrics/lime.json

@@ -14,8 +14,20 @@ stages:
     - split.random_state
     - split.benign_dir
     - split.malware_dir
+    - split.unique_ratio
+    - train.head
+    - train.num_features
+  train_detector:
+    cmd: python train_detector.py
+    deps:
+      - ${train.benign}
+      - ${train.malware}
+    params:
+      - split.random_state
+      - train.benign
+      - train.malware
   train_malgan:
-    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --gen-hidden-sizes 1000 512 256 512 1000 --activation ${train.activation}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --activation ${train.activation}
       ${train.malware}
     deps:
     - ${train.benign}
@@ -29,15 +41,8 @@ stages:
     - train.name
     - train.activation
     - train.estimators
-  train_detector:
-    cmd: python train_detector.py
-    deps:
-      - ${train.benign}
-      - ${train.malware}
-    params:
-      - split.random_state
-      - train.benign
-      - train.malware
+    - dynamic.yaml:
+      - detector.id
   train_mca:
     cmd: python mca.py
     deps:
@@ -103,6 +108,7 @@ stages:
       - ${valid.benign}
       - ${valid.malware}
       - ${train.mca}
+      - ${train.normal_features}
       - dynamic.yaml
     params:
       - valid.benign

@@ -1,11 +1,13 @@
 from lime.lime_tabular import LimeTabularExplainer
 import pandas as pd
 import numpy as np
+from helpers.params import load_params
 
 class LimeExplainer:
-    C = 100000 # LIME scaling constant
     def __init__(self, data):
         self.explainer = self.__getExplainer(data)
+        v_params, = load_params("valid")
+        self.C = v_params["lime_scale"] # Scaling constant for space around kernel
     
     def explain(self, example, classifier, **kwargs):
         exp = self.explainer.explain_instance(example*self.C, lambda x: classifier.predict_proba(x/self.C), **kwargs)

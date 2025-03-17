@@ -29,8 +29,8 @@ class Experiment:
 
     @log
     def __loadData(self, random_state=42):
-        df_ben = pd.DataFrame(np.load(t_params["benign"]))
-        df_mal = pd.DataFrame(np.load(t_params["malware"]))
+        df_ben = pd.DataFrame(np.load(v_params["benign"]))
+        df_mal = pd.DataFrame(np.load(v_params["malware"]))
         df_obf = self.__obfuscateData(df_mal)
         df_ben['class'] = 0  # Benign = 0
         df_mal['class'] = 1  # Malware = 1
@@ -109,7 +109,7 @@ class LimeCase(Experiment):
         t = self.verifier.transform(
             limeVerify.HashableType(features, "features"))
         v = t.progress_apply(lambda x: self.verifier.verify(
-            limeVerify.HashableType(x.values, x.values.data.tobytes())), axis=1)
+            limeVerify.HashableType(x.values, compareByKey=False)), axis=1)
         vt = v.transform(lambda x: 0 if x else 1).transform(
             lambda x: 2 if x == 1 and keepObfuscated else x)
         pdf.update(vt, overwrite=True)
@@ -134,11 +134,13 @@ class LimeCase(Experiment):
         self.printReports(self.y, y_verified,
                           m_params["lime"], m_params["lime_confusion"])
         logger.info(self.verifier.transform.cache_info())
+        logger.info(self.verifier.verify.cache_info())
 
         y_verified = self.verify(y_pred, keepObfuscated=True)
         self.printReports(self.y_obf, y_verified,
                           m_params["lime_obf"], m_params["lime_confusion_obf"])
         logger.info(self.verifier.transform.cache_info())
+        logger.info(self.verifier.verify.cache_info())
 
 
 if __name__ == '__main__':

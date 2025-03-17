@@ -25,10 +25,10 @@ from sklearn.svm import SVC
 
 import torch
 from torch import Tensor
-import dvc.api
+from helpers.params import load_params
 
 TorchOrNumpy = Union[np.ndarray, Tensor]
-
+t_params, d_params = load_params("train", "detector")
 
 # noinspection PyPep8Naming
 class BlackBoxDetector:
@@ -41,7 +41,7 @@ class BlackBoxDetector:
         DecisionTree = DecisionTreeClassifier()
         LogisticRegression = LogisticRegression(solver='lbfgs', max_iter=int(1e6))
         MultiLayerPerceptron = MLPClassifier()
-        RandomForest = RandomForestClassifier(n_estimators=dvc.api.params_show()["train"]["estimators"])
+        RandomForest = RandomForestClassifier(n_estimators=t_params["estimators"])
         SVM = SVC(gamma="auto")
 
         @classmethod
@@ -64,7 +64,7 @@ class BlackBoxDetector:
 
     def __init__(self, learner_type: 'BlackBoxDetector.Type'):
         self.type = learner_type
-        # noinspection PyCallingNonCallable
+        # # noinspection PyCallingNonCallable
         self._model = sklearn.clone(self.type.value)
         self.training = True
 

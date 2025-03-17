@@ -6,21 +6,33 @@ import ast
 import logging
 from helpers.lime import LimeExplainer
 from functools import lru_cache
+import numpy as np
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
     
 class HashableType():
-    def __init__(self, obj, key):
+    def __init__(self, obj, key=None, compareByKey=True):
         self.obj = obj
         self.__key = key
+        self.__compareByKey = compareByKey
     
     def __hash__(self):
+        if isinstance(self.obj, np.ndarray):
+            self.obj.flags.writeable = False
+            return hash(self.obj.data.tobytes())
         return hash(self.__key)
     
     def __eq__(self, other):
-        return self.__key == other.__key
+        if self.__compareByKey:
+            return self.__key == other.__key
+        if isinstance(self.obj, np.ndarray):
+            isEqual = np.array_equal(self.obj, other.obj)
+            if isEqual:
+                logger.debug(f"{self.obj} == {other.obj}")
+            return isEqual
+        return self.obj == other.obj
 
 class LimeVerify:
     def __init__(self, run_ids, normal_features_path, mca_data_path):
@@ -51,6 +63,7 @@ class LimeVerify:
     
     # Issue URL: https://github.com/onlyidev/bachelor.code/issues/3
     # milestone: Figure out LIME
+    @lru_cache(maxsize=None)
     def verify(self, input: HashableType, outputResult=False):
         """Verifies if the input is benign (only meant to be used after initial classification)
 

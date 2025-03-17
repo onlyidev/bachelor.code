@@ -49,7 +49,7 @@ def setup_logger(quiet_mode: bool, log_level: int = logging.INFO,
         logging.getLogger().addHandler(handler)
 
     logging.info("******************* New Run Beginning *****************")
-    logging.debug("CUDA: %s", "ENABLED" if IS_CUDA else "Disabled")
+    logging.info("CUDA: %s", "ENABLED" if IS_CUDA else "Disabled")
     logging.info(" ".join(sys.argv))
 
 

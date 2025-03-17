@@ -160,14 +160,14 @@ class MalGAN(nn.Module):
 
         self._is_cuda = IS_CUDA
 
-        logging.debug("Constructing new MalGAN")
-        logging.debug("Malware Dimension (M): %d", self.M)
-        logging.debug("Latent Dimension (Z): %d", self.Z)
-        logging.debug("Test Split Ratio: %.3f", test_split)
-        logging.debug("Generator Hidden Layer Sizes: %s", h_gen)
-        logging.debug("Discriminator Hidden Layer Sizes: %s", h_discrim)
-        logging.debug("Blackbox Detector Type: %s", detector_type.name)
-        logging.debug("Activation Type: %s", self._g.__class__.__name__)
+        logging.info("Constructing new MalGAN")
+        logging.info("Malware Dimension (M): %d", self.M)
+        logging.info("Latent Dimension (Z): %d", self.Z)
+        logging.info("Test Split Ratio: %.3f", test_split)
+        logging.info("Generator Hidden Layer Sizes: %s", h_gen)
+        logging.info("Discriminator Hidden Layer Sizes: %s", h_discrim)
+        logging.info("Blackbox Detector Type: %s", detector_type.name)
+        logging.info("Activation Type: %s", self._g.__class__.__name__)
 
         self._bb = BlackBoxDetector(detector_type)
         self._gen = Generator(M=self.M, Z=self.Z, hidden_size=h_gen, g=self._g)
@@ -222,9 +222,9 @@ class MalGAN(nn.Module):
 
         merged_y = torch.cat((torch.full((len(mal_train),), MalGAN.Label.Malware.value),
                               torch.full((len(ben_train),), MalGAN.Label.Benign.value)))
-        logging.debug("Starting training of blackbox detector of type \"%s\"", self._bb.type.name)
+        logging.info("Starting training of blackbox detector of type \"%s\"", self._bb.type.name)
         self._bb.fit(merged_x, merged_y)
-        logging.debug("COMPLETED training of blackbox detector of type \"%s\"", self._bb.type.name)
+        logging.info("COMPLETED training of blackbox detector of type \"%s\"", self._bb.type.name)
 
     def fit(self, cyc_len: int, quiet_mode: bool = False) -> None:
         r"""
@@ -376,8 +376,8 @@ class MalGAN(nn.Module):
         valid_loss = self._meas_loader_gen_loss(self._mal_data.valid)
         # noinspection PyTypeChecker
         test_loss = self._meas_loader_gen_loss(self._mal_data.test)
-        logging.debug("Final Validation Loss: %.6f", valid_loss)
-        logging.debug("Final Test Loss: %.6f", test_loss)
+        logging.info("Final Validation Loss: %.6f", valid_loss)
+        logging.info("Final Test Loss: %.6f", test_loss)
 
         num_mal_test = 0
         y_mal_orig, m_prime_arr, bits_changed = [], [], []
@@ -397,7 +397,7 @@ class MalGAN(nn.Module):
             msg = "Malware signature changed to 0 which is not allowed"
             assert torch.sum(m_diff < -0.1) == 0, msg
         avg_changed_bits = torch.cat(bits_changed).mean()
-        logging.debug("Avg. Malware Bits Changed Changed: %2f", avg_changed_bits)
+        logging.info("Avg. Malware Bits Changed Changed: %2f", avg_changed_bits)
 
         # BB prediction of the malware before the generator
         y_mal_orig = torch.cat(y_mal_orig)

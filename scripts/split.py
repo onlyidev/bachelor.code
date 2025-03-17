@@ -4,9 +4,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import dvc.api
 from tqdm import tqdm
+import random
 
-
-def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid, test_size=0.2, random_state=42, limit=None, num_features=None):
+def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid, test_size=0.2, random_state=42, limit=None, num_features=None, unique_ratio=0.7):
     """
     Aggregates tensors from multiple pickle files in a directory, splits the aggregated
     tensor into training and validation sets, and saves the resulting sets to separate
@@ -21,8 +21,9 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
         random_state (int): Random state for reproducible splitting.
     """
     tensors = []
-    files = os.listdir(input_dir) if limit is None else os.listdir(
-        input_dir)[:limit]
+    files = os.listdir(input_dir)
+    random.shuffle(files)
+    files = files[:limit] if limit is not None else files
     for filename in tqdm(files, desc=f"Processing {input_dir}"):
         file_path = os.path.join(input_dir, filename)
         try:
@@ -44,6 +45,9 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
     # Aggregate the tensors
     try:
         aggregated_tensor = np.array(tensors)
+        unique = np.unique(aggregated_tensor, axis=0)
+        ratio = len(unique) / len(aggregated_tensor)
+        assert ratio > 0.7, f"Wated at least 70% unique tensors, got {ratio*100}%"
     except Exception as e:
         print(f"Error: Could not aggregate the tensors. {e}")
         return
@@ -85,6 +89,6 @@ if __name__ == "__main__":
     t_params = params["train"]
     v_params = params["valid"]
     aggregate_and_split_tensors(s_params["benign_dir"], t_params["benign"], v_params["benign"], test_size=s_params["test_size"],
-                                random_state=s_params["random_state"], limit=t_params["head"], num_features=t_params["num_features"])
+                                random_state=s_params["random_state"], limit=t_params["head"], num_features=t_params["num_features"], unique_ratio=s_params["unique_ratio"])
     aggregate_and_split_tensors(s_params["malware_dir"], t_params["malware"], v_params["malware"], test_size=s_params["test_size"],
-                                random_state=s_params["random_state"], limit=t_params["head"], num_features=t_params["num_features"])
+                                random_state=s_params["random_state"], limit=t_params["head"], num_features=t_params["num_features"], unique_ratio=s_params["unique_ratio"])
