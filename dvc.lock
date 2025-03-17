@@ -277,3 +277,25 @@ stages:
         split.random_state: 42
         train.benign: data/train/ben.npy
         train.malware: data/train/mal.npy
+  extract_normal_categorical_features:
+    cmd: python lime_normal_categorical.py
+    deps:
+    - path: data/train/ben.npy
+      hash: md5
+      md5: 4981e6582c4caf040511e5c4be1020ef
+      size: 6400128
+    - path: dynamic.yaml
+      hash: md5
+      md5: 27f8da0a0b957d67ffb072a514226d2e
+      size: 195
+    params:
+      params.yaml:
+        train.benign: data/train/ben.npy
+        train.normal_categorical_features: data/normal_categorical_features.txt
+      dynamic.yaml:
+        detector.id: 011748e973f948f7b492439b3b825849
+    outs:
+    - path: data/normal_categorical_features.txt
+      hash: md5
+      md5: 407861c277244ee1cd3e6e9d535368fc
+      size: 2837

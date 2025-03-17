@@ -13,6 +13,7 @@ train:
   malware: data/train/mal.npy
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
+  normal_categorical_features: data/normal_categorical_features.txt
   name: Bachelor_10k_200-Features
   estimators: 100
   head: 10000
