@@ -142,6 +142,24 @@ class LimeCase(Experiment):
         logger.info(self.verifier.transform.cache_info())
         logger.info(self.verifier.verify.cache_info())
 
+class LimeCategoricalCase(LimeCase):
+    @timing
+    def __init__(self):
+        super().__init__()
+        self.verifier = limeVerify.CategoricalLimeVerify(t_params["normal_categorical_features"], d_params["id"])
+
+    @log
+    @timing
+    def verify(self, preds, keepObfuscated=False):
+        pdf = pd.DataFrame(preds)
+        df = pdf[pdf[0] == 0]
+        features = self.X[self.X.index.isin(df.index)]
+        v = features.progress_apply(lambda x: self.verifier.verify(
+            limeVerify.HashableType(x.values, compareByKey=False)), axis=1)
+        vt = v.transform(lambda x: 0 if x else 1).transform(
+            lambda x: 2 if x == 1 and keepObfuscated else x)
+        pdf.update(vt, overwrite=True)
+        return pdf.values
 
 if __name__ == '__main__':
     d_params, o_params, m_params, t_params, v_params, mca_params, mca_cls_params = load_params(
@@ -156,5 +174,8 @@ if __name__ == '__main__':
         case "lime":
             logger.info("Running LIME case")
             LimeCase().run()
+        case "categorical":
+            logger.info("Running LIME Categorical case")
+            LimeCategoricalCase().run()
         case _:
             raise ValueError("Invalid experiment type")

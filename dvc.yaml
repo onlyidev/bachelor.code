@@ -139,3 +139,23 @@ stages:
     outs:
       - ${metrics.lime_confusion}
       - ${metrics.lime_confusion_obf}
+  experiment_lime_categorical:
+    cmd: PYTHONHASHSEED=0 python experiment.py categorical
+    deps:
+      - ${valid.benign}
+      - ${valid.malware}
+      - ${train.normal_categorical_features}
+      - dynamic.yaml
+    params:
+      - valid.benign
+      - valid.malware
+      - train.normal_categorical_features
+      - dynamic.yaml:
+        - malgan.id
+        - detector.id
+    metrics:
+      - ${metrics.lime_cat}
+      - ${metrics.lime_cat_obf}
+    outs:
+      - ${metrics.lime_cat_confusion}
+      - ${metrics.lime_cat_confusion_obf}

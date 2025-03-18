@@ -67,36 +67,37 @@ stages:
         split.malware_dir: data/raw/sleipnir/malicious
         split.random_state: 42
         split.test_size: 0.2
+        split.unique_ratio: 0.09
         train.head: 10000
-        train.num_features: 200
+        train.num_features: 300
     outs:
     - path: data/train/ben.npy
       hash: md5
-      md5: 4981e6582c4caf040511e5c4be1020ef
-      size: 6400128
+      md5: e635301b101c71ddb728db66fad02178
+      size: 9600128
     - path: data/train/mal.npy
       hash: md5
-      md5: 9784a98b2059f51eb44923750266f396
-      size: 6400128
+      md5: ed3a083febdb05757279dc079f3d8d04
+      size: 9600128
     - path: data/valid/ben.npy
       hash: md5
-      md5: 546c4452cd0134d507c6c7b8b4bc67a9
-      size: 1600128
+      md5: de965185fd0f70e45e28dcd8637ca0e6
+      size: 2400128
     - path: data/valid/mal.npy
       hash: md5
-      md5: 9ac75e47f95cc92aa3ae72b704d5d305
-      size: 1600128
+      md5: f58dbf3229f2bade623b00ee61408cfd
+      size: 2400128
   train_malgan:
     cmd: python main.py 60 32 300 data/train/ben.npy --activation tanh data/train/mal.npy
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: 4981e6582c4caf040511e5c4be1020ef
-      size: 6400128
+      md5: e635301b101c71ddb728db66fad02178
+      size: 9600128
     - path: data/train/mal.npy
       hash: md5
-      md5: 9784a98b2059f51eb44923750266f396
-      size: 6400128
+      md5: ed3a083febdb05757279dc079f3d8d04
+      size: 9600128
     params:
       params.yaml:
         train.Z: 60
@@ -105,21 +106,21 @@ stages:
         train.benign: data/train/ben.npy
         train.estimators: 100
         train.malware: data/train/mal.npy
-        train.name: Bachelor_10k_200-Features
+        train.name: Bachelor_10k_200-Features_random_split
         train.num_epochs: 300
       dynamic.yaml:
-        detector.id: 011748e973f948f7b492439b3b825849
+        detector.id: d53507904a6649ee89a4b0d4980e5a62
   train_mca:
     cmd: python mca.py
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: 4981e6582c4caf040511e5c4be1020ef
-      size: 6400128
+      md5: e635301b101c71ddb728db66fad02178
+      size: 9600128
     - path: data/train/mal.npy
       hash: md5
-      md5: 9784a98b2059f51eb44923750266f396
-      size: 6400128
+      md5: ed3a083febdb05757279dc079f3d8d04
+      size: 9600128
     params:
       params.yaml:
         train.estimators: 100
@@ -129,15 +130,15 @@ stages:
     outs:
     - path: data/MCA.csv
       hash: md5
-      md5: ce8da81e6499c35eebe7a1b7c7d89155
-      size: 3300827
+      md5: babf0a78e839c2c151b8a77eca990fe1
+      size: 3299960
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: ce8da81e6499c35eebe7a1b7c7d89155
-      size: 3300827
+      md5: babf0a78e839c2c151b8a77eca990fe1
+      size: 3299960
     params:
       params.yaml:
         train.estimators: 100
@@ -147,13 +148,13 @@ stages:
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: ce8da81e6499c35eebe7a1b7c7d89155
-      size: 3300827
+      md5: babf0a78e839c2c151b8a77eca990fe1
+      size: 3299960
     outs:
     - path: outs/mca_scatter.html
       hash: md5
-      md5: afcd3aa24088b5565fb0f2ea766f98b8
-      size: 4412183
+      md5: 16dbdbb73eb679381c0fcfdd758a8dc7
+      size: 4417443
   extract_normal_features:
     cmd: python lime_normal.py
     deps:
@@ -266,12 +267,12 @@ stages:
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: 4981e6582c4caf040511e5c4be1020ef
-      size: 6400128
+      md5: e635301b101c71ddb728db66fad02178
+      size: 9600128
     - path: data/train/mal.npy
       hash: md5
-      md5: 9784a98b2059f51eb44923750266f396
-      size: 6400128
+      md5: ed3a083febdb05757279dc079f3d8d04
+      size: 9600128
     params:
       params.yaml:
         split.random_state: 42

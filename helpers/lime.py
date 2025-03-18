@@ -23,7 +23,7 @@ class LimeExplainer:
     def __getExplainer(self, data):
         mca_data = pd.read_csv(data) * self.C  # Scale data for LIME
         self.num_features = len(mca_data.columns) - 1
-        return LimeTabularExplainer(mca_data.values[:, :-1], feature_names=mca_data.columns[:-1], class_names=['Benign', 'Malicious'], discretize_continuous=True, sample_around_instance=True)
+        return LimeTabularExplainer(training_labels=mca_data.values[:, -1], training_data=mca_data.values[:, :-1], feature_names=mca_data.columns[:-1], class_names=['Benign', 'Malicious'], discretize_continuous=True, sample_around_instance=True)
 
 
 class CategoricalLimeExplainer:
@@ -47,4 +47,4 @@ class CategoricalLimeExplainer:
         labels = [0] * len(df_ben) + [1] * len(df_mal)
         df = pd.concat([df_ben, df_mal])
         self.num_features = len(df.columns)
-        return LimeTabularExplainer(df.values, feature_names=df.columns, class_names=['Benign', 'Malicious'], categorical_features=df.index.to_list(), sample_around_instance=True)
+        return LimeTabularExplainer(training_labels=labels, training_data=df.values, feature_names=df.columns, class_names=['Benign', 'Malicious'], categorical_features=df.index.to_list(), sample_around_instance=True)

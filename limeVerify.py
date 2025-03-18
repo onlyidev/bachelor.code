@@ -4,7 +4,7 @@ r"""
 import mlflow
 import ast
 import logging
-from helpers.lime import LimeExplainer
+from helpers.lime import LimeExplainer, CategoricalLimeExplainer
 from functools import lru_cache
 import numpy as np
 
@@ -75,6 +75,46 @@ class LimeVerify:
             bool: True if the input is benign, False otherwise
         """        
         exp = self.__explainer.explain_important(input.obj, self.__mca_classifier)
+        if outputResult:
+            exp.show_in_notebook()
+        features = set([name for name, _ in exp.as_list()])
+        isBenign = features.issubset(self.__normal)
+        if not isBenign:
+            logger.info("Non-standard features detected. Marking as malicious")
+        return isBenign
+    
+class CategoricalLimeVerify:
+    def __init__(self, normal_features_path, run_id):
+        self.__loadModels(run_id)
+        self.__loadNormalFeatures(normal_features_path)
+        self.__initExplainer()
+        
+    def __loadModels(self, run_id):
+        self.__classifier = mlflow.sklearn.load_model(f"runs:/{run_id}/BB")
+        
+    def __loadNormalFeatures(self, path):
+        with open(path, "r") as f:
+            self.__normal = ast.literal_eval(f.read())
+            logger.info(f"Loaded {len(self.__normal)} normal features")
+            
+    def __initExplainer(self):
+        self.__explainer = CategoricalLimeExplainer()
+        logger.info("Loaded explainer")
+         
+    # Issue URL: https://github.com/onlyidev/bachelor.code/issues/3
+    # milestone: Figure out LIME
+    @lru_cache(maxsize=None)
+    def verify(self, input: HashableType, outputResult=False):
+        """Verifies if the input is benign (only meant to be used after initial classification)
+
+        Args:
+            input (feature vector): The input to be verified (should be transformed by MCA if required)
+            outputResult (bool, optional): Show LIME explanation (in notebook). Defaults to False 
+
+        Returns:
+            bool: True if the input is benign, False otherwise
+        """        
+        exp = self.__explainer.explain_important(input.obj, self.__classifier)
         if outputResult:
             exp.show_in_notebook()
         features = set([name for name, _ in exp.as_list()])
