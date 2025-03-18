@@ -6,10 +6,9 @@ from helpers.params import load_params
 
 class LimeExplainer:
     def __init__(self, data):
-        self.explainer = self.__getExplainer(data)
         v_params, = load_params("valid")
-        # Scaling constant for space around kernel
         self.C = v_params["lime_scale"]
+        self.explainer = self.__getExplainer(data)
 
     def explain(self, example, classifier, **kwargs):
         exp = self.explainer.explain_instance(

@@ -160,6 +160,20 @@ class LimeCategoricalCase(LimeCase):
             lambda x: 2 if x == 1 and keepObfuscated else x)
         pdf.update(vt, overwrite=True)
         return pdf.values
+    
+    @log
+    @timing
+    def run(self):
+        y_pred = self.detector.predict(self.X)  # Original prediction
+        y_verified = self.verify(y_pred)
+        self.printReports(self.y, y_verified,
+                          m_params["lime_cat"], m_params["lime_cat_confusion"])
+        logger.info(self.verifier.verify.cache_info())
+
+        y_verified = self.verify(y_pred, keepObfuscated=True)
+        self.printReports(self.y_obf, y_verified,
+                          m_params["lime_cat_obf"], m_params["lime_cat_confusion_obf"])
+        logger.info(self.verifier.verify.cache_info())
 
 if __name__ == '__main__':
     d_params, o_params, m_params, t_params, v_params, mca_params, mca_cls_params = load_params(
