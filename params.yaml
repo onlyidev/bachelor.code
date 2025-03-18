@@ -1,7 +1,7 @@
 split:
   test_size: 0.2
   random_state: 42
-  unique_ratio: 0.7
+  unique_ratio: 0.09
   benign_dir: data/raw/sleipnir/benign
   malware_dir: data/raw/sleipnir/malicious
 train:
@@ -14,19 +14,23 @@ train:
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
   normal_categorical_features: data/normal_categorical_features.txt
-  name: Bachelor_10k_200-Features
+  name: Bachelor_10k_200-Features_random_split
   estimators: 100
   head: 10000
-  num_features: 200
+  num_features: 300
   mca_components: 10
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
-  lime_scale: 100000
+  lime_scale: 10000
 metrics:
   normal: metrics/normal.json
   lime: metrics/lime.json
   lime_obf: metrics/lime_obf.json
+  lime_cat: metrics/lime_cat.json
+  lime_cat_obf: metrics/lime_cat_obf.json
   normal_confusion: metrics/normal.png
   lime_confusion: metrics/lime.png
   lime_confusion_obf: metrics/lime_obf.png
+  lime_cat_confusion: metrics/lime_cat.png
+  lime_cat_confusion_obf: metrics/lime_cat_obf.png

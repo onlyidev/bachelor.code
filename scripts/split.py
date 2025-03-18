@@ -47,7 +47,7 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
         aggregated_tensor = np.array(tensors)
         unique = np.unique(aggregated_tensor, axis=0)
         ratio = len(unique) / len(aggregated_tensor)
-        assert ratio > 0.7, f"Wated at least 70% unique tensors, got {ratio*100}%"
+        assert ratio > unique_ratio, f"Wanted at least {unique_ratio * 100}% unique tensors, got {ratio*100}%"
     except Exception as e:
         print(f"Error: Could not aggregate the tensors. {e}")
         return
