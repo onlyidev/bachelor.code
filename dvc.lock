@@ -69,35 +69,35 @@ stages:
         split.test_size: 0.2
         split.unique_ratio: 0.09
         train.head: 10000
-        train.num_features: 300
+        train.num_features: 200
     outs:
     - path: data/train/ben.npy
       hash: md5
-      md5: e635301b101c71ddb728db66fad02178
-      size: 9600128
+      md5: e9a3fc84f73af11553b06d681320f199
+      size: 6400128
     - path: data/train/mal.npy
       hash: md5
-      md5: ed3a083febdb05757279dc079f3d8d04
-      size: 9600128
+      md5: a7f21c4df75b30601ce78ef8b64e1ee5
+      size: 6400128
     - path: data/valid/ben.npy
       hash: md5
-      md5: de965185fd0f70e45e28dcd8637ca0e6
-      size: 2400128
+      md5: 25fa8f8bd5c522596c2fe2d88c164419
+      size: 1600128
     - path: data/valid/mal.npy
       hash: md5
-      md5: f58dbf3229f2bade623b00ee61408cfd
-      size: 2400128
+      md5: 418a2f874304d994b0ecc67e97b69f17
+      size: 1600128
   train_malgan:
     cmd: python main.py 60 32 300 data/train/ben.npy --activation tanh data/train/mal.npy
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: e635301b101c71ddb728db66fad02178
-      size: 9600128
+      md5: e9a3fc84f73af11553b06d681320f199
+      size: 6400128
     - path: data/train/mal.npy
       hash: md5
-      md5: ed3a083febdb05757279dc079f3d8d04
-      size: 9600128
+      md5: a7f21c4df75b30601ce78ef8b64e1ee5
+      size: 6400128
     params:
       params.yaml:
         train.Z: 60
@@ -109,18 +109,18 @@ stages:
         train.name: Bachelor_10k_200-Features_random_split
         train.num_epochs: 300
       dynamic.yaml:
-        detector.id: d53507904a6649ee89a4b0d4980e5a62
+        detector.id: e977e9ff9f4e4c7cba0da0a2f0c20b38
   train_mca:
     cmd: python mca.py
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: e635301b101c71ddb728db66fad02178
-      size: 9600128
+      md5: e9a3fc84f73af11553b06d681320f199
+      size: 6400128
     - path: data/train/mal.npy
       hash: md5
-      md5: ed3a083febdb05757279dc079f3d8d04
-      size: 9600128
+      md5: a7f21c4df75b30601ce78ef8b64e1ee5
+      size: 6400128
     params:
       params.yaml:
         train.estimators: 100
@@ -130,15 +130,15 @@ stages:
     outs:
     - path: data/MCA.csv
       hash: md5
-      md5: babf0a78e839c2c151b8a77eca990fe1
-      size: 3299960
+      md5: ccddfe124b0afc9c89efc6a5d2cb435f
+      size: 3300302
   train_mca_classifier:
     cmd: python mca_classifier.py
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: babf0a78e839c2c151b8a77eca990fe1
-      size: 3299960
+      md5: ccddfe124b0afc9c89efc6a5d2cb435f
+      size: 3300302
     params:
       params.yaml:
         train.estimators: 100
@@ -148,27 +148,27 @@ stages:
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: babf0a78e839c2c151b8a77eca990fe1
-      size: 3299960
+      md5: ccddfe124b0afc9c89efc6a5d2cb435f
+      size: 3300302
     outs:
     - path: outs/mca_scatter.html
       hash: md5
-      md5: 16dbdbb73eb679381c0fcfdd758a8dc7
-      size: 4417443
+      md5: 4e98c5a1db14e754f367bc444771bfc2
+      size: 4414356
   extract_normal_features:
     cmd: python lime_normal.py
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: babf0a78e839c2c151b8a77eca990fe1
-      size: 3299960
+      md5: ccddfe124b0afc9c89efc6a5d2cb435f
+      size: 3300302
     - path: data/train/ben.npy
       hash: md5
-      md5: e635301b101c71ddb728db66fad02178
-      size: 9600128
+      md5: e9a3fc84f73af11553b06d681320f199
+      size: 6400128
     - path: dynamic.yaml
       hash: md5
-      md5: 91d16a05289ad407306c298500170e89
+      md5: 5a489703ee7a07746757c1fab81d9c32
       size: 195
     params:
       params.yaml:
@@ -176,27 +176,27 @@ stages:
         train.mca: data/MCA.csv
         train.normal_features: data/normal_features.txt
       dynamic.yaml:
-        mca.id: 04efad775f894fa0a0a926ee29c2092f
-        mca_classifier.id: 4966a95a859648fc844949a1283fbe74
+        mca.id: 185d4140c2754cbcab3a87b6f363fc74
+        mca_classifier.id: 2585cf7859fc4fe8a9f339c3699f189b
     outs:
     - path: data/normal_features.txt
       hash: md5
-      md5: e649b4198362911041c2538bcc628f73
-      size: 643
+      md5: 6004bea69adcc59b6416193db446a347
+      size: 417
   experiment_base:
     cmd: PYTHONHASHSEED=0 python experiment.py normal
     deps:
     - path: data/valid/ben.npy
       hash: md5
-      md5: de965185fd0f70e45e28dcd8637ca0e6
-      size: 2400128
+      md5: 25fa8f8bd5c522596c2fe2d88c164419
+      size: 1600128
     - path: data/valid/mal.npy
       hash: md5
-      md5: f58dbf3229f2bade623b00ee61408cfd
-      size: 2400128
+      md5: 418a2f874304d994b0ecc67e97b69f17
+      size: 1600128
     - path: dynamic.yaml
       hash: md5
-      md5: 91d16a05289ad407306c298500170e89
+      md5: 5a489703ee7a07746757c1fab81d9c32
       size: 195
     params:
       params.yaml:
@@ -204,39 +204,39 @@ stages:
         valid.benign: data/valid/ben.npy
         valid.malware: data/valid/mal.npy
       dynamic.yaml:
-        detector.id: d53507904a6649ee89a4b0d4980e5a62
-        malgan.id: 33efd140f9154c29ab744a0c9dfd4cd1
+        detector.id: e977e9ff9f4e4c7cba0da0a2f0c20b38
+        malgan.id: e632103594624157b7cbe98f5f30f87f
     outs:
     - path: metrics/normal.json
       hash: md5
-      md5: a1e9cb07c134406d1ea03347d3cfc6e2
-      size: 931
+      md5: f12021c7288fdb3a028d672c523b8695
+      size: 928
     - path: metrics/normal.png
       hash: md5
-      md5: 943cd144e13d7abd8ce1fdb54e3b9d0d
-      size: 18157
+      md5: 8d0c40d29c161f9938428017b9e92f73
+      size: 20949
   experiment_lime:
     cmd: PYTHONHASHSEED=0 python experiment.py lime
     deps:
     - path: data/MCA.csv
       hash: md5
-      md5: babf0a78e839c2c151b8a77eca990fe1
-      size: 3299960
+      md5: ccddfe124b0afc9c89efc6a5d2cb435f
+      size: 3300302
     - path: data/normal_features.txt
       hash: md5
-      md5: e649b4198362911041c2538bcc628f73
-      size: 643
+      md5: 6004bea69adcc59b6416193db446a347
+      size: 417
     - path: data/valid/ben.npy
       hash: md5
-      md5: de965185fd0f70e45e28dcd8637ca0e6
-      size: 2400128
+      md5: 25fa8f8bd5c522596c2fe2d88c164419
+      size: 1600128
     - path: data/valid/mal.npy
       hash: md5
-      md5: f58dbf3229f2bade623b00ee61408cfd
-      size: 2400128
+      md5: 418a2f874304d994b0ecc67e97b69f17
+      size: 1600128
     - path: dynamic.yaml
       hash: md5
-      md5: 91d16a05289ad407306c298500170e89
+      md5: 5a489703ee7a07746757c1fab81d9c32
       size: 195
     params:
       params.yaml:
@@ -245,38 +245,38 @@ stages:
         valid.benign: data/valid/ben.npy
         valid.malware: data/valid/mal.npy
       dynamic.yaml:
-        detector.id: d53507904a6649ee89a4b0d4980e5a62
-        malgan.id: 33efd140f9154c29ab744a0c9dfd4cd1
-        mca.id: 04efad775f894fa0a0a926ee29c2092f
-        mca_classifier.id: 4966a95a859648fc844949a1283fbe74
+        detector.id: e977e9ff9f4e4c7cba0da0a2f0c20b38
+        malgan.id: e632103594624157b7cbe98f5f30f87f
+        mca.id: 185d4140c2754cbcab3a87b6f363fc74
+        mca_classifier.id: 2585cf7859fc4fe8a9f339c3699f189b
     outs:
     - path: metrics/lime.json
       hash: md5
-      md5: a1e9cb07c134406d1ea03347d3cfc6e2
-      size: 931
+      md5: e11feea937ce6562ff9358d81ac3d97e
+      size: 867
     - path: metrics/lime.png
       hash: md5
-      md5: 943cd144e13d7abd8ce1fdb54e3b9d0d
-      size: 18157
+      md5: ffddcb8f8dd6e442d09b32aa3a5ef528
+      size: 20986
     - path: metrics/lime_obf.json
       hash: md5
-      md5: a1e9cb07c134406d1ea03347d3cfc6e2
-      size: 931
+      md5: e11feea937ce6562ff9358d81ac3d97e
+      size: 867
     - path: metrics/lime_obf.png
       hash: md5
-      md5: 4c2cdb44a76ea32d061a07aea8d90a3b
-      size: 23082
+      md5: 2557fa93bf3c5991554114223bf02322
+      size: 24229
   train_detector:
     cmd: python train_detector.py
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: e635301b101c71ddb728db66fad02178
-      size: 9600128
+      md5: e9a3fc84f73af11553b06d681320f199
+      size: 6400128
     - path: data/train/mal.npy
       hash: md5
-      md5: ed3a083febdb05757279dc079f3d8d04
-      size: 9600128
+      md5: a7f21c4df75b30601ce78ef8b64e1ee5
+      size: 6400128
     params:
       params.yaml:
         split.random_state: 42
@@ -287,41 +287,41 @@ stages:
     deps:
     - path: data/train/ben.npy
       hash: md5
-      md5: e635301b101c71ddb728db66fad02178
-      size: 9600128
+      md5: e9a3fc84f73af11553b06d681320f199
+      size: 6400128
     - path: dynamic.yaml
       hash: md5
-      md5: 91d16a05289ad407306c298500170e89
+      md5: 5a489703ee7a07746757c1fab81d9c32
       size: 195
     params:
       params.yaml:
         train.benign: data/train/ben.npy
         train.normal_categorical_features: data/normal_categorical_features.txt
       dynamic.yaml:
-        detector.id: d53507904a6649ee89a4b0d4980e5a62
+        detector.id: e977e9ff9f4e4c7cba0da0a2f0c20b38
     outs:
     - path: data/normal_categorical_features.txt
       hash: md5
-      md5: 66924911ecf0538696f84f3cf16c7797
-      size: 3605
+      md5: 607ea153dba40a04c1709878d57df2ae
+      size: 2621
   experiment_lime_categorical:
     cmd: PYTHONHASHSEED=0 python experiment.py categorical
     deps:
     - path: data/normal_categorical_features.txt
       hash: md5
-      md5: 66924911ecf0538696f84f3cf16c7797
-      size: 3605
+      md5: 607ea153dba40a04c1709878d57df2ae
+      size: 2621
     - path: data/valid/ben.npy
       hash: md5
-      md5: de965185fd0f70e45e28dcd8637ca0e6
-      size: 2400128
+      md5: 25fa8f8bd5c522596c2fe2d88c164419
+      size: 1600128
     - path: data/valid/mal.npy
       hash: md5
-      md5: f58dbf3229f2bade623b00ee61408cfd
-      size: 2400128
+      md5: 418a2f874304d994b0ecc67e97b69f17
+      size: 1600128
     - path: dynamic.yaml
       hash: md5
-      md5: 91d16a05289ad407306c298500170e89
+      md5: 5a489703ee7a07746757c1fab81d9c32
       size: 195
     params:
       params.yaml:
@@ -329,22 +329,22 @@ stages:
         valid.benign: data/valid/ben.npy
         valid.malware: data/valid/mal.npy
       dynamic.yaml:
-        detector.id: d53507904a6649ee89a4b0d4980e5a62
-        malgan.id: 33efd140f9154c29ab744a0c9dfd4cd1
+        detector.id: e977e9ff9f4e4c7cba0da0a2f0c20b38
+        malgan.id: e632103594624157b7cbe98f5f30f87f
     outs:
     - path: metrics/lime_cat.json
       hash: md5
-      md5: ac59b0cd253b1d01428b5a3c96e5bbba
-      size: 868
+      md5: 5f0cd3b4fcce81c6dd5977286b0c191e
+      size: 873
     - path: metrics/lime_cat.png
       hash: md5
-      md5: f4e4564b2f3df396f594805ac842f7a6
-      size: 17467
+      md5: 8104b10da0d7aa9cb04bf71dcbb0a7ac
+      size: 20829
     - path: metrics/lime_cat_obf.json
       hash: md5
-      md5: ac59b0cd253b1d01428b5a3c96e5bbba
-      size: 868
+      md5: 5f0cd3b4fcce81c6dd5977286b0c191e
+      size: 873
     - path: metrics/lime_cat_obf.png
       hash: md5
-      md5: f7ce2ac45c2c9a511494cbdae28b6742
-      size: 22681
+      md5: f3bc50dd289bcb9bbd3d1e5d34675385
+      size: 23951

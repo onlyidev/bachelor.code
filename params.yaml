@@ -17,7 +17,7 @@ train:
   name: Bachelor_10k_200-Features_random_split
   estimators: 100
   head: 10000
-  num_features: 300
+  num_features: 200
   mca_components: 10
 valid:
   benign: data/valid/ben.npy
