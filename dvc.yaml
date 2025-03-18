@@ -84,7 +84,7 @@ stages:
     - train.normal_features
     - dynamic.yaml:
       - mca.id
-      - mca_classifier.id'
+      - mca_classifier.id
   extract_normal_categorical_features:
     cmd: python lime_normal_categorical.py
     deps:
