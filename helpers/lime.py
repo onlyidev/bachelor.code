@@ -17,7 +17,8 @@ class LimeExplainer:
         return exp
 
     def explain_important(self, example, classifier):
-        return self.explain(example, classifier, num_features=int(np.sqrt(self.num_features)))
+        #return self.explain(example, classifier, num_features=int(np.sqrt(self.num_features)))
+        return self.explain(example, classifier, num_features=1)
 
     def __getExplainer(self, data):
         mca_data = pd.read_csv(data) * self.C  # Scale data for LIME
