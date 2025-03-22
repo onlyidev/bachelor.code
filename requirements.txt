@@ -11,3 +11,5 @@ dvc_s3
 lime
 fastparquet
 tqdm>=4.9.0
+discord-webhook
+dotenv

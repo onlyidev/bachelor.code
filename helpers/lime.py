@@ -38,7 +38,7 @@ class CategoricalLimeExplainer:
         return exp
 
     def explain_important(self, example, classifier):
-        return self.explain(example, classifier, num_features=int(np.sqrt(self.num_features)))
+        return self.explain(example, classifier, num_features=1)
 
     def __getExplainer(self):
         t_params, = load_params("train")

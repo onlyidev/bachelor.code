@@ -22,8 +22,8 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
     """
     tensors = []
     files = os.listdir(input_dir)
-    random.shuffle(files)
-    files = files[:limit] if limit is not None else files
+    # random.shuffle(files)
+    # files = files[:limit] if limit is not None else files
     for filename in tqdm(files, desc=f"Processing {input_dir}"):
         file_path = os.path.join(input_dir, filename)
         try:
@@ -44,10 +44,11 @@ def aggregate_and_split_tensors(input_dir, output_file_train, output_file_valid,
 
     # Aggregate the tensors
     try:
-        aggregated_tensor = np.array(tensors)
-        unique = np.unique(aggregated_tensor, axis=0)
-        ratio = len(unique) / len(aggregated_tensor)
-        assert ratio > unique_ratio, f"Wanted at least {unique_ratio * 100}% unique tensors, got {ratio*100}%"
+        aggregated_tensor = np.unique(np.array(tensors), axis=0)[:limit]
+        # unique = np.unique(aggregated_tensor, axis=0)
+        # ratio = len(unique) / len(aggregated_tensor)
+        # assert ratio > unique_ratio, f"Wanted at least {unique_ratio * 100}% unique tensors, got {ratio*100}%"
+        assert len(aggregated_tensor) == limit, f"Wanted {limit} tensors, got {len(aggregated_tensor)}"
     except Exception as e:
         print(f"Error: Could not aggregate the tensors. {e}")
         return

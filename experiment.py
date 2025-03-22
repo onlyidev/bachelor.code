@@ -15,6 +15,7 @@ import json
 import limeVerify
 import warnings
 from tqdm import tqdm
+from scripts.notify import Notifier
 
 logging.basicConfig(level=logging.INFO)
 warnings.filterwarnings("ignore")
@@ -24,6 +25,7 @@ tqdm.pandas(desc="Verifying")
 class Experiment:
     @timing
     def __init__(self):
+        self.notifier = Notifier(thread_name=t_params["name"])
         self.__loadData()
         self.detector = mlflow.sklearn.load_model(f"runs:/{d_params['id']}/BB")
 
@@ -88,6 +90,7 @@ class NormalCase(Experiment):
         disp = ConfusionMatrixDisplay(
             confusion_matrix=confusion, display_labels=['Benign', 'Malware'])
         disp.plot().figure_.savefig(m_params["normal_confusion"])
+        self.notifier.upload([m_params["normal_confusion"]], "Normal case")
         with open(m_params["normal"], "w") as f:
             f.write(self.metrics(y_pred))
 
@@ -139,6 +142,7 @@ class LimeCase(Experiment):
         y_verified = self.verify(y_pred, keepObfuscated=True)
         self.printReports(self.y_obf, y_verified,
                           m_params["lime_obf"], m_params["lime_confusion_obf"])
+        self.notifier.upload([m_params["lime_confusion_obf"]], "LIME (with MCA) case")
         logger.info(self.verifier.transform.cache_info())
         logger.info(self.verifier.verify.cache_info())
 
@@ -173,6 +177,7 @@ class LimeCategoricalCase(LimeCase):
         y_verified = self.verify(y_pred, keepObfuscated=True)
         self.printReports(self.y_obf, y_verified,
                           m_params["lime_cat_obf"], m_params["lime_cat_confusion_obf"])
+        self.notifier.upload([m_params["lime_confusion_obf"]], "LIME (Fully Categorical) case")
         logger.info(self.verifier.verify.cache_info())
 
 if __name__ == '__main__':

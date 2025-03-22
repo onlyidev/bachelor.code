@@ -1,11 +1,12 @@
 split:
   test_size: 0.2
   random_state: 42
-  unique_ratio: 0.08
+  unique_ratio: 0.7
   benign_dir: data/raw/sleipnir/benign
   malware_dir: data/raw/sleipnir/malicious
 train:
-  Z: 60
+  Z: 100
+  gen_hidden: 256 512 256
   batch_size: 32
   num_epochs: 500
   activation: leakyrelu
@@ -14,9 +15,9 @@ train:
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
   normal_categorical_features: data/normal_categorical_features.txt
-  name: Bachelor_1k_200-Features_lime_1
-  estimators: 100
-  head: 1000
+  name: Bachelor_1500_200-Features_lime_1_DLR-e6_Hidden_512_Z100
+  estimators: 10
+  head: 1500
   num_features: 200
   mca_components: 10
 valid:

@@ -26,9 +26,9 @@ stages:
       - split.random_state
       - train.benign
       - train.malware
+      - train.estimators
   train_malgan:
-    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --activation ${train.activation}
-      ${train.malware}
+    cmd: python main.py ${train.Z} ${train.batch_size} ${train.num_epochs} ${train.benign} --gen-hidden-sizes ${train.gen_hidden} --activation ${train.activation} ${train.malware}
     deps:
     - ${train.benign}
     - ${train.malware}
@@ -41,6 +41,7 @@ stages:
     - train.name
     - train.activation
     - train.estimators
+    - train.gen_hidden
     - dynamic.yaml:
       - detector.id
   train_mca:
@@ -159,3 +160,8 @@ stages:
     outs:
       - ${metrics.lime_cat_confusion}
       - ${metrics.lime_cat_confusion_obf}
+  notify:
+    cmd: python scripts/notify.py "Pipeline ${train.name} has been executed. More at https://flow.mlops"
+    params:
+      - train.name
+    always_changed: true
