@@ -16,9 +16,8 @@ class LimeExplainer:
         assert exp.available_labels() == [1]
         return exp
 
-    def explain_important(self, example, classifier):
-        #return self.explain(example, classifier, num_features=int(np.sqrt(self.num_features)))
-        return self.explain(example, classifier, num_features=1)
+    def explain_all(self, example, classifier):
+        return self.explain(example, classifier, num_features=len(example))
 
     def __getExplainer(self, data):
         mca_data = pd.read_csv(data) * self.C  # Scale data for LIME
@@ -29,16 +28,14 @@ class LimeExplainer:
 class CategoricalLimeExplainer:
     def __init__(self):
         self.explainer = self.__getExplainer()
-        v_params, = load_params("valid")
-        self.C = v_params["lime_scale"]
 
     def explain(self, example, classifier, **kwargs):
-        exp = self.explainer.explain_instance(example*self.C, lambda x: classifier.predict_proba(x), **kwargs)
+        exp = self.explainer.explain_instance(example, lambda x: classifier.predict_proba(x), **kwargs)
         assert exp.available_labels() == [1]
         return exp
 
-    def explain_important(self, example, classifier):
-        return self.explain(example, classifier, num_features=1)
+    def explain_all(self, example, classifier):
+        return self.explain(example, classifier, num_features=len(example))
 
     def __getExplainer(self):
         t_params, = load_params("train")

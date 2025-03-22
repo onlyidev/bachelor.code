@@ -14,12 +14,15 @@ class Notifier:
         if url is not None:
             self._discord = discord_webhook.DiscordWebhook(url, kwargs=kwargs)
 
+    def _content(self, c):
+        self._discord.set_content(c[-2000:])
+
     def notify(self, message, mentions=[]):
         print(mentions)
         if hasattr(self, '_discord'):
             s = [self.users[user] for user in mentions if user in self.users]
             m = " ".join([f'<@{u}>' for u in s])
-            self._discord.set_content(f'{m} {message}')
+            self._content(f'{m} {message}')
             self._discord.execute()
     
     def upload(self, files=[], message=""):
@@ -27,7 +30,7 @@ class Notifier:
             for file in files:
                 with open(file, 'rb') as f:
                    self._discord.add_file(file=f.read(), filename=file.split('/')[-1])
-            self._discord.set_content(message)
+            self._content(message)
             self._discord.execute()
     
 if __name__ == '__main__':

@@ -35,11 +35,12 @@ class HashableType():
         return self.obj == other.obj
 
 class LimeVerify:
-    def __init__(self, run_ids, normal_features_path, mca_data_path):
+    def __init__(self, run_ids, normal_features_path, mca_data_path, num_features=None):
         self.__run_ids = run_ids
         self.__loadModels()
         self.__loadNormalFeatures(normal_features_path)
         self.__initExplainer(mca_data_path)
+        self.__num_features = len(self.__normal) if num_features == None else num_features
         
     def __loadModels(self):
         self.__mca = mlflow.pyfunc.load_model(f"runs:/{self.__run_ids['mca']}/mca")
@@ -74,17 +75,18 @@ class LimeVerify:
         Returns:
             bool: True if the input is benign, False otherwise
         """        
-        exp = self.__explainer.explain_important(input.obj, self.__mca_classifier)
+        exp = self.__explainer.explain(input.obj, self.__mca_classifier, num_features=self.__num_features)
         if outputResult:
             exp.show_in_notebook()
-        features = set([name for name, _ in exp.as_list()])
+        features = set([name for name, _ in list(filter(lambda x: x[1] < 0,exp.as_list()))])
         isBenign = features.issubset(self.__normal)
         if not isBenign:
             logger.info("Non-standard features detected. Marking as malicious")
         return isBenign
     
 class CategoricalLimeVerify:
-    def __init__(self, normal_features_path, run_id):
+    def __init__(self, normal_features_path, run_id, num_features=1):
+        self.__num_features = num_features
         self.__loadModels(run_id)
         self.__loadNormalFeatures(normal_features_path)
         self.__initExplainer()
@@ -114,10 +116,10 @@ class CategoricalLimeVerify:
         Returns:
             bool: True if the input is benign, False otherwise
         """        
-        exp = self.__explainer.explain_important(input.obj, self.__classifier)
+        exp = self.__explainer.explain(input.obj, self.__classifier, num_features=self.__num_features)
         if outputResult:
             exp.show_in_notebook()
-        features = set([name for name, _ in exp.as_list()])
+        features = set([name for name, _ in list(filter(lambda x: x[1] < 0,exp.as_list()))])
         isBenign = features.issubset(self.__normal)
         if not isBenign:
             logger.info("Non-standard features detected. Marking as malicious")
