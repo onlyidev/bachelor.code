@@ -101,7 +101,7 @@ class LimeCase(Experiment):
     def __init__(self):
         super().__init__()
         self.verifier = limeVerify.LimeVerify(dict(
-            mca=mca_params["id"], mca_cls=mca_cls_params["id"]), t_params["normal_features"], t_params["mca"])
+            mca=mca_params["id"], mca_cls=mca_cls_params["id"]), t_params["normal_features"], t_params["mca"], 18)
 
     @log
     @timing
@@ -177,7 +177,7 @@ class LimeCategoricalCase(LimeCase):
         y_verified = self.verify(y_pred, keepObfuscated=True)
         self.printReports(self.y_obf, y_verified,
                           m_params["lime_cat_obf"], m_params["lime_cat_confusion_obf"])
-        self.notifier.upload([m_params["lime_confusion_obf"]], "LIME (Fully Categorical) case")
+        self.notifier.upload([m_params["lime_cat_confusion_obf"]], "LIME (Fully Categorical) case")
         logger.info(self.verifier.verify.cache_info())
 
 if __name__ == '__main__':

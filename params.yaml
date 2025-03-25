@@ -6,7 +6,7 @@ split:
   malware_dir: data/raw/sleipnir/malicious
 train:
   Z: 100
-  gen_hidden: 256 512 256
+  gen_hidden: 256 512 512 256
   batch_size: 32
   num_epochs: 500
   activation: leakyrelu
@@ -15,11 +15,11 @@ train:
   mca: data/MCA.csv
   normal_features: data/normal_features.txt
   normal_categorical_features: data/normal_categorical_features.txt
-  name: Bachelor_1500_200-Features_lime_1_DLR-e6_Hidden_512_Z100
+  name: Layer_increase_higher_LR
   estimators: 10
   head: 1500
   num_features: 200
-  mca_components: 10
+  mca_components: 50
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy

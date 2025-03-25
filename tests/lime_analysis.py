@@ -22,4 +22,5 @@ results = df.progress_apply(extract, axis=1) # type: ignore
 rdf = pd.DataFrame(np.stack(results.to_list()).reshape([-1,2]))
 rdf.columns = ["feature", "importance"]
 rdf = rdf.dropna()
-rdf = rdf.groupby("feature")["importance"].sum().sort_values(ascending=False) # type: ignore
+#%%
+rdf.groupby("feature")["importance"].std().sort_values(ascending=False) # type: ignore

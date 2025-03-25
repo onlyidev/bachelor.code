@@ -30,8 +30,10 @@ with startExperiment(t_params["name"], run_name="mca") as exp:
     mca = prince.MCA(n_components=t_params["mca_components"], n_iter=3)
     mca = mca.fit(df)
     inertia = max(mca.cumulative_percentage_of_variance_)
-    logger.info(f"Explained inertia: {inertia}",)
-    assert inertia > 50, "Inertia is too low, increase the number of components" 
+    
+    logger.info("Explained inertia: %s", inertia)
+    
+    assert inertia > 75, f"Inertia of {inertia} is too low, increase the number of components" 
     
     transformed_data = mca.transform(df)
     table = {

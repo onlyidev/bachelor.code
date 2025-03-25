@@ -12,6 +12,8 @@ import warnings
 from helpers.params import load_params
 
 warnings.filterwarnings("ignore")
+tqdm.pandas()
+
 #%% Parameters
 t_params, d_params = load_params("train", "detector")
 #%% Load models
@@ -20,21 +22,21 @@ classifier = mlflow.sklearn.load_model(f"runs:/{d_params['id']}/BB")
 #%% Get set
 df = pd.DataFrame(np.load(t_params["benign"], mmap_mode='r'))
 
-normal = set()
-
-def process_example(example):
-    exp = explainer.explain_important(example, classifier)
-    return set([name for name, _ in exp.as_list()])
+def extract(example):
+    exp = explainer.explain_all(example, classifier)
+    return [(k, -v if v < 0 else None) for k, v in exp.as_list()]
 
 if __name__ == '__main__':
     print("Processing benign examples")
-    with multiprocessing.Pool(processes=4) as pool:
-        results = tqdm(pool.imap_unordered(process_example, [example for _, example in df.iterrows()]), total=len(df), desc="Collecting normal features")
-        iter = tqdm(results, desc="Combining results")
-        for result in iter:
-            normal |= result
-            iter.set_description(f"Combining results ({len(normal)} features)")
+    results = df.progress_apply(extract, axis=1) # type: ignore
+    rdf = pd.DataFrame(np.stack(results.to_list()).reshape([-1,2]))
+    rdf.columns = ["feature", "importance"]
+    rdf["importance"] = pd.to_numeric(rdf["importance"], errors='coerce')
+    rdf = rdf.dropna()
+    rdf = rdf.groupby("feature")["importance"].sum().sort_values(ascending=False) # type: ignore
     
-#%% Save set
-with open(t_params["normal_categorical_features"], "w") as f:
-    f.write(str(normal))
+    num_features = int(np.log(len(df)))
+    print(f"Selecting {num_features} most important features")
+    #%% Save set
+    with open(t_params["normal_categorical_features"], "w") as f:
+        f.write(str(set(rdf.head(num_features).keys().to_list())))

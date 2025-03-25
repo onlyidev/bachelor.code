@@ -70,6 +70,7 @@ stages:
     params:
     - train.mca
     - train.estimators
+    - train.mca_components
   extract_normal_features:
     cmd: python lime_normal.py
     deps:

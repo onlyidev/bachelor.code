@@ -239,11 +239,11 @@ class MalGAN(nn.Module):
 
         MalGAN.tensorboard = tensorboardX.SummaryWriter()
 
-        d_optimizer = optim.Adam(self._discrim.parameters(), lr=1e-5)
-        g_optimizer = optim.Adam(self._gen.parameters(), lr=2e-4, betas=(0.5, 0.999))
+        d_optimizer = optim.Adam(self._discrim.parameters(), lr=1e-4)
+        g_optimizer = optim.Adam(self._gen.parameters(), lr=1e-3, betas=(0.5, 0.999))
         
-        mlflow.log_param("Discriminator_Learning_Rate", 1e-6)
-        mlflow.log_param("Generator_Learning_Rate", 2e-4)
+        # mlflow.log_param("Discriminator_Learning_Rate", 1e-6)
+        # mlflow.log_param("Generator_Learning_Rate", 2e-4)
 
         if not quiet_mode:
             names = ["Gen Train Loss", "Gen Valid Loss", "Discrim Train Loss", "Best?"]

@@ -38,7 +38,7 @@ if __name__ == '__main__':
     rdf = rdf.dropna()
     rdf = rdf.groupby("feature")["importance"].sum().sort_values(ascending=False) # type: ignore
     
-    num_features = int(np.log(len(df)))
+    num_features = int(0.5*(len(rdf)))
     print(f"Selecting {num_features} most important features")
     #%% Save set
     with open(t_params["normal_features"], "w") as f:
