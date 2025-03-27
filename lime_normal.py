@@ -34,12 +34,10 @@ if __name__ == '__main__':
     results = df.progress_apply(extract, axis=1) # type: ignore
     rdf = pd.DataFrame(np.stack(results.to_list()).reshape([-1,2]))
     rdf.columns = ["feature", "importance"]
-    rdf["importance"] = pd.to_numeric(rdf["importance"], errors='coerce')
-    rdf = rdf.dropna()
-    rdf = rdf.groupby("feature")["importance"].sum().sort_values(ascending=False) # type: ignore
-    
-    num_features = int(0.5*(len(rdf)))
-    print(f"Selecting {num_features} most important features")
+    a = rdf.groupby("feature")["importance"].mean().sort_values(ascending=False) # type: ignore
+    s = rdf.groupby("feature")["importance"].std().sort_values(ascending=False) # type: ignore
+    eTable = a.rename("average").to_frame().join(s.rename("std")).dropna()
+
     #%% Save set
     with open(t_params["normal_features"], "w") as f:
-        f.write(str(set(rdf.head(num_features).keys().to_list())))
+        eTable.to_csv(f)

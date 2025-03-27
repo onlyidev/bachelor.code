@@ -100,8 +100,7 @@ class LimeCase(Experiment):
     @timing
     def __init__(self):
         super().__init__()
-        self.verifier = limeVerify.LimeVerify(dict(
-            mca=mca_params["id"], mca_cls=mca_cls_params["id"]), t_params["normal_features"], t_params["mca"], 18)
+        self.verifier = limeVerify.LimeVerify()
 
     @log
     @timing
@@ -159,7 +158,7 @@ class LimeCategoricalCase(LimeCase):
         df = pdf[pdf[0] == 0]
         features = self.X[self.X.index.isin(df.index)]
         v = features.progress_apply(lambda x: self.verifier.verify(
-            limeVerify.HashableType(x.values, compareByKey=False)), axis=1)
+            limeVerify.HashableType(x.values, compareByKey=False)), axis=1) # type: ignore
         vt = v.transform(lambda x: 0 if x else 1).transform(
             lambda x: 2 if x == 1 and keepObfuscated else x)
         pdf.update(vt, overwrite=True)

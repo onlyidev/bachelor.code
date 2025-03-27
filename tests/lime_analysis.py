@@ -23,4 +23,6 @@ rdf = pd.DataFrame(np.stack(results.to_list()).reshape([-1,2]))
 rdf.columns = ["feature", "importance"]
 rdf = rdf.dropna()
 #%%
-rdf.groupby("feature")["importance"].std().sort_values(ascending=False) # type: ignore
+a = rdf.groupby("feature")["importance"].mean().sort_values(ascending=False) # type: ignore
+s = rdf.groupby("feature")["importance"].std().sort_values(ascending=False) # type: ignore
+eTable = a.rename("average").to_frame().join(s.rename("std")).dropna()

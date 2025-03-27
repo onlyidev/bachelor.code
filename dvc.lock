@@ -177,15 +177,15 @@ stages:
       params.yaml:
         train.benign: data/train/ben.npy
         train.mca: data/MCA.csv
-        train.normal_features: data/normal_features.txt
+        train.normal_features: data/normal_features.csv
       dynamic.yaml:
         mca.id: 5d49566050954b57961f34c4f0e0423a
         mca_classifier.id: 72cd93345fd54f9ab7f147eac402f9c1
     outs:
-    - path: data/normal_features.txt
+    - path: data/normal_features.csv
       hash: md5
-      md5: 617b737ca32c7cfb22d62f6057adf9a8
-      size: 2023
+      md5: ea2fa3f47118c92bd336333d9906010e
+      size: 11498
   experiment_base:
     cmd: PYTHONHASHSEED=0 python experiment.py normal
     deps:
@@ -225,10 +225,10 @@ stages:
       hash: md5
       md5: 2498f42bbabef173c34ecf19768c94c2
       size: 2499409
-    - path: data/normal_features.txt
+    - path: data/normal_features.csv
       hash: md5
-      md5: 617b737ca32c7cfb22d62f6057adf9a8
-      size: 2023
+      md5: ea2fa3f47118c92bd336333d9906010e
+      size: 11498
     - path: data/valid/ben.npy
       hash: md5
       md5: f3eef3bb44f77921fa1ccf51d995b3c9
@@ -244,7 +244,7 @@ stages:
     params:
       params.yaml:
         train.mca: data/MCA.csv
-        train.normal_features: data/normal_features.txt
+        train.normal_features: data/normal_features.csv
         valid.benign: data/valid/ben.npy
         valid.malware: data/valid/mal.npy
       dynamic.yaml:
@@ -255,20 +255,20 @@ stages:
     outs:
     - path: metrics/lime.json
       hash: md5
-      md5: 42edf1dcf5d9b08f56a700bb2b72140f
-      size: 895
+      md5: f789bf14b636aa02c67a6d2af27df240
+      size: 925
     - path: metrics/lime.png
       hash: md5
-      md5: e5ff549b2c7afdbc20346c04ee53b96d
-      size: 19012
+      md5: a703a6b6f036bad57bd0c8044ff13642
+      size: 18771
     - path: metrics/lime_obf.json
       hash: md5
-      md5: 40337cc81d616dd27eb2d91ea4c15e0f
-      size: 1107
+      md5: 0e8509d72c723aadd36c5c17f0ab9c24
+      size: 1117
     - path: metrics/lime_obf.png
       hash: md5
-      md5: 3b237fecd0182bf3b9dd0d72fee79042
-      size: 25576
+      md5: 367e10553d250c69b86a34cec6c566c0
+      size: 26834
   train_detector:
     cmd: python train_detector.py
     deps:

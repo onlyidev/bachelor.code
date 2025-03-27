@@ -13,8 +13,8 @@ train:
   benign: data/train/ben.npy
   malware: data/train/mal.npy
   mca: data/MCA.csv
-  normal_features: data/normal_features.txt
-  normal_categorical_features: data/normal_categorical_features.txt
+  normal_features: data/normal_features.csv
+  normal_categorical_features: data/normal_categorical_features.csv
   name: Layer_increase_higher_LR
   estimators: 10
   head: 1500
