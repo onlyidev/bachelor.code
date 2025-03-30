@@ -79,11 +79,12 @@ class LimeVerify:
         exp = self.explainer.explain_all(input.obj, self.mca_classifier)
         if outputResult:
             exp.show_in_notebook()
-        features = pd.DataFrame([(k, -v if v < 0 else None) for k, v in exp.as_list()])
+        features = pd.DataFrame([(k, v) for k, v in exp.as_list()])
         features.columns = ["feature", "importance"]
+        features = features.astype({"importance": "float"})
         features = features.set_index("feature").join(self.normal.set_index("feature")).dropna() 
         features["deviation"] = (features["importance"] - features["average"]).abs()
-        features["malicious"] = features["deviation"] > 3*features["std"]
+        features["malicious"] = features["deviation"] > 2.25*features["std"]
         
         isMal = features["malicious"].any()
         if isMal:
@@ -127,11 +128,11 @@ class CategoricalLimeVerify:
         exp = self.explainer.explain_all(input.obj, self.mca_classifier)
         if outputResult:
             exp.show_in_notebook()
-        features = pd.DataFrame([(k, -v if v < 0 else None) for k, v in exp.as_list()])
+        features = pd.DataFrame([(k, v) for k, v in exp.as_list()])
         features.columns = ["feature", "importance"]
         features = features.set_index("feature").join(self.normal.set_index("feature")).dropna() 
         features["deviation"] = (features["importance"] - features["average"]).abs()
-        features["malicious"] = features["deviation"] > 3*features["std"]
+        features["malicious"] = features["deviation"] > 2.75*features["std"]
         
         isMal = features["malicious"].any()
         if isMal:

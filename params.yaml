@@ -23,7 +23,7 @@ train:
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
-  lime_scale: 100000
+  lime_scale: 1
 metrics:
   normal: metrics/normal.json
   lime: metrics/lime.json

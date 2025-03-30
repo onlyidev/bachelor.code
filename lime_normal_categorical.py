@@ -24,13 +24,14 @@ df = pd.DataFrame(np.load(t_params["benign"], mmap_mode='r'))
 
 def extract(example):
     exp = explainer.explain_all(example, classifier)
-    return [(k, -v if v < 0 else None) for k, v in exp.as_list()]
+    return [(k, v) for k, v in exp.as_list()]
 
 if __name__ == '__main__':
     print("Processing benign examples")
     results = df.progress_apply(extract, axis=1) # type: ignore
     rdf = pd.DataFrame(np.stack(results.to_list()).reshape([-1,2]))
     rdf.columns = ["feature", "importance"]
+    rdf = rdf.astype({"importance": "float"})
     a = rdf.groupby("feature")["importance"].mean().sort_values(ascending=False) # type: ignore
     s = rdf.groupby("feature")["importance"].std().sort_values(ascending=False) # type: ignore
     eTable = a.rename("average").to_frame().join(s.rename("std")).dropna()
