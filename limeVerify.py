@@ -76,7 +76,7 @@ class LimeVerify:
         Returns:
             bool: True if the input is benign, False otherwise
         """        
-        exp = self.explainer.explain(input.obj, self.mca_classifier, num_features=int(np.sqrt(len(input.obj))))
+        exp = self.explainer.explain_all(input.obj, self.mca_classifier)
         if outputResult:
             exp.show_in_notebook()
         features = pd.DataFrame([(k, -v if v < 0 else None) for k, v in exp.as_list()])
@@ -91,24 +91,26 @@ class LimeVerify:
         return not isMal
     
 class CategoricalLimeVerify:
-    def __init__(self, normal_features_path, run_id, num_features=1):
-        self.__num_features = num_features
-        self.__loadModels(run_id)
-        self.__loadNormalFeatures(normal_features_path)
+    def __init__(self):
+        t_params, d_params = load_params("train", "detector")
+        self.det_id = d_params["id"]
+        self.__loadModels()
+        self.__loadNormalFeatures(t_params["normal_categorical_features"])
         self.__initExplainer()
         
-    def __loadModels(self, run_id):
-        self.__classifier = mlflow.sklearn.load_model(f"runs:/{run_id}/BB")
+    def __loadModels(self):
+        self.mca_classifier = mlflow.sklearn.load_model(f"runs:/{self.det_id}/BB")
+        logger.info("Loaded Classifier")
         
     def __loadNormalFeatures(self, path):
-        with open(path, "r") as f:
-            self.__normal = ast.literal_eval(f.read())
-            logger.info(f"Loaded {len(self.__normal)} normal features")
+        self.normal = pd.read_csv(path)
+        logger.info(f"Loaded {len(self.normal)} normal features")
             
     def __initExplainer(self):
-        self.__explainer = CategoricalLimeExplainer()
+        self.explainer = CategoricalLimeExplainer()
         logger.info("Loaded explainer")
          
+    
     # Issue URL: https://github.com/onlyidev/bachelor.code/issues/3
     # milestone: Figure out LIME
     @lru_cache(maxsize=None)
@@ -122,11 +124,16 @@ class CategoricalLimeVerify:
         Returns:
             bool: True if the input is benign, False otherwise
         """        
-        exp = self.__explainer.explain(input.obj, self.__classifier, num_features=self.__num_features)
+        exp = self.explainer.explain_all(input.obj, self.mca_classifier)
         if outputResult:
             exp.show_in_notebook()
-        features = set([name for name, _ in list(filter(lambda x: x[1] < 0,exp.as_list()))])
-        isBenign = features.issubset(self.__normal)
-        if not isBenign:
+        features = pd.DataFrame([(k, -v if v < 0 else None) for k, v in exp.as_list()])
+        features.columns = ["feature", "importance"]
+        features = features.set_index("feature").join(self.normal.set_index("feature")).dropna() 
+        features["deviation"] = (features["importance"] - features["average"]).abs()
+        features["malicious"] = features["deviation"] > 3*features["std"]
+        
+        isMal = features["malicious"].any()
+        if isMal:
             logger.info("Non-standard features detected. Marking as malicious")
-        return isBenign
+        return not isMal

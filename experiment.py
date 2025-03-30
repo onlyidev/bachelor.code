@@ -107,7 +107,7 @@ class LimeCase(Experiment):
     def verify(self, preds, keepObfuscated=False):
         pdf = pd.DataFrame(preds)
         df = pdf[pdf[0] == 0]
-        features = self.X[self.X.index.isin(df.index)]
+        features = self.X[self.X.index.isin(df.index)].copy()
         t = self.verifier.transform(
             limeVerify.HashableType(features, "features"))
         v = t.progress_apply(lambda x: self.verifier.verify(
@@ -132,7 +132,7 @@ class LimeCase(Experiment):
     @timing
     def run(self):
         y_pred = self.detector.predict(self.X)  # Original prediction
-        y_verified = self.verify(y_pred)
+        y_verified = self.verify(y_pred.copy())
         self.printReports(self.y, y_verified,
                           m_params["lime"], m_params["lime_confusion"])
         logger.info(self.verifier.transform.cache_info())
@@ -145,22 +145,33 @@ class LimeCase(Experiment):
         logger.info(self.verifier.transform.cache_info())
         logger.info(self.verifier.verify.cache_info())
 
-class LimeCategoricalCase(LimeCase):
+class LimeCategoricalCase(Experiment):
     @timing
     def __init__(self):
         super().__init__()
-        self.verifier = limeVerify.CategoricalLimeVerify(t_params["normal_categorical_features"], d_params["id"])
+        self.verifier = limeVerify.CategoricalLimeVerify()
 
     @log
+    def printReports(self, y_true, y_pred, reportFile, confusionFile):
+        report = classification_report(y_true, y_pred)
+        confusion = confusion_matrix(y_true, y_pred, normalize='true')
+        print(report)
+        disp = ConfusionMatrixDisplay(confusion_matrix=confusion, display_labels=[
+                                      'Benign', 'Malware'] if len(confusion) == 2 else ['Benign', 'Malware', 'Obfuscated'])
+        disp.plot().figure_.savefig(confusionFile)
+        with open(reportFile, "w") as f:
+            f.write(self.metrics(y_pred))
+    
+    @log
     @timing
-    def verify(self, preds, keepObfuscated=False):
+    def verify(self, preds, keep_obfuscated=False):
         pdf = pd.DataFrame(preds)
         df = pdf[pdf[0] == 0]
-        features = self.X[self.X.index.isin(df.index)]
+        features = self.X[self.X.index.isin(df.index)].copy()
         v = features.progress_apply(lambda x: self.verifier.verify(
             limeVerify.HashableType(x.values, compareByKey=False)), axis=1) # type: ignore
         vt = v.transform(lambda x: 0 if x else 1).transform(
-            lambda x: 2 if x == 1 and keepObfuscated else x)
+            lambda x: 2 if x == 1 and keep_obfuscated else x)
         pdf.update(vt, overwrite=True)
         return pdf.values
     
@@ -168,12 +179,12 @@ class LimeCategoricalCase(LimeCase):
     @timing
     def run(self):
         y_pred = self.detector.predict(self.X)  # Original prediction
-        y_verified = self.verify(y_pred)
+        y_verified = self.verify(y_pred.copy())
         self.printReports(self.y, y_verified,
                           m_params["lime_cat"], m_params["lime_cat_confusion"])
         logger.info(self.verifier.verify.cache_info())
 
-        y_verified = self.verify(y_pred, keepObfuscated=True)
+        y_verified = self.verify(y_pred, keep_obfuscated=True)
         self.printReports(self.y_obf, y_verified,
                           m_params["lime_cat_obf"], m_params["lime_cat_confusion_obf"])
         self.notifier.upload([m_params["lime_cat_confusion_obf"]], "LIME (Fully Categorical) case")
