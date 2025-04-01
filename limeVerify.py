@@ -84,7 +84,7 @@ class LimeVerify:
         features = features.astype({"importance": "float"})
         features = features.set_index("feature").join(self.normal.set_index("feature")).dropna() 
         features["deviation"] = (features["importance"] - features["average"]).abs()
-        features["malicious"] = features["deviation"] > 2.25*features["std"]
+        features["malicious"] = features["deviation"] > 3*features["std"]
         
         isMal = features["malicious"].any()
         if isMal:
