@@ -184,8 +184,8 @@ stages:
     outs:
     - path: data/normal_features.csv
       hash: md5
-      md5: 465b3a57d0925f5f1b991ab4a61fee5d
-      size: 12213
+      md5: 177e16cead8ab47b4095d541d364987d
+      size: 12206
   experiment_base:
     cmd: PYTHONHASHSEED=0 python experiment.py normal
     deps:
@@ -227,8 +227,8 @@ stages:
       size: 2499409
     - path: data/normal_features.csv
       hash: md5
-      md5: 465b3a57d0925f5f1b991ab4a61fee5d
-      size: 12213
+      md5: 177e16cead8ab47b4095d541d364987d
+      size: 12206
     - path: data/valid/ben.npy
       hash: md5
       md5: f3eef3bb44f77921fa1ccf51d995b3c9

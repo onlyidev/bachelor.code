@@ -23,7 +23,6 @@ df_malicious = pd.DataFrame(data_malicious)
 df = pd.concat([df_benign, df_malicious], ignore_index=True)
 
 #%%
-# TODO Add inertia calculations / graph
 # Issue URL: https://github.com/onlyidev/bachelor.code/issues/4
 #
 with startExperiment(t_params["name"], run_name="mca") as exp:

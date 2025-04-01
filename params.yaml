@@ -19,7 +19,7 @@ train:
   estimators: 10
   head: 1500
   num_features: 200
-  mca_components: 50
+  mca_components: 4
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
