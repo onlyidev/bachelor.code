@@ -19,7 +19,7 @@ train:
   estimators: 10
   head: 1500
   num_features: 200
-  mca_components: 4
+  mca_components: 30
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
@@ -35,3 +35,5 @@ metrics:
   lime_confusion_obf: metrics/lime_obf.png
   lime_cat_confusion: metrics/lime_cat.png
   lime_cat_confusion_obf: metrics/lime_cat_obf.png
+  mca_equiv: metrics/mca_equiv.json
+  mca_equiv_confusion: metrics/mca_equiv.png

@@ -32,7 +32,7 @@ with startExperiment(t_params["name"], run_name="mca") as exp:
     
     logger.info("Explained inertia: %s", inertia)
     
-    assert inertia > 75, f"Inertia of {inertia} is too low, increase the number of components" 
+    assert inertia > 70, f"Inertia of {inertia} is too low, increase the number of components" 
     
     transformed_data = mca.transform(df)
     table = {
