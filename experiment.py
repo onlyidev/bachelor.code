@@ -118,7 +118,7 @@ class LimeCase(Experiment):
         return pdf.values
 
     @log
-    def printReports(self, y_true, y_pred, reportFile, confusionFile):
+    def printReports(self, y_true, y_pred, reportFile, confusionFile, keepObfuscated = False):
         report = classification_report(y_true, y_pred)
         confusion = confusion_matrix(y_true, y_pred, normalize='true')
         print(report)
@@ -126,7 +126,7 @@ class LimeCase(Experiment):
                                       'Benign', 'Malware'] if len(confusion) == 2 else ['Benign', 'Malware', 'Obfuscated'])
         disp.plot().figure_.savefig(confusionFile)
         with open(reportFile, "w") as f:
-            f.write(self.metrics(y_pred))
+            f.write(self.metrics(y_pred, keepObfuscated=keepObfuscated))
 
     @log
     @timing
@@ -140,7 +140,7 @@ class LimeCase(Experiment):
 
         y_verified = self.verify(y_pred, keepObfuscated=True)
         self.printReports(self.y_obf, y_verified,
-                          m_params["lime_obf"], m_params["lime_confusion_obf"])
+                          m_params["lime_obf"], m_params["lime_confusion_obf"], keepObfuscated=True)
         self.notifier.upload([m_params["lime_confusion_obf"]], "LIME (with MCA) case")
         logger.info(self.verifier.transform.cache_info())
         logger.info(self.verifier.verify.cache_info())
@@ -152,7 +152,7 @@ class LimeCategoricalCase(Experiment):
         self.verifier = limeVerify.CategoricalLimeVerify()
 
     @log
-    def printReports(self, y_true, y_pred, reportFile, confusionFile):
+    def printReports(self, y_true, y_pred, reportFile, confusionFile, keepObfuscated = False):
         report = classification_report(y_true, y_pred)
         confusion = confusion_matrix(y_true, y_pred, normalize='true')
         print(report)
@@ -160,7 +160,7 @@ class LimeCategoricalCase(Experiment):
                                       'Benign', 'Malware'] if len(confusion) == 2 else ['Benign', 'Malware', 'Obfuscated'])
         disp.plot().figure_.savefig(confusionFile)
         with open(reportFile, "w") as f:
-            f.write(self.metrics(y_pred))
+            f.write(self.metrics(y_pred, keepObfuscated=keepObfuscated))
     
     @log
     @timing
@@ -186,7 +186,7 @@ class LimeCategoricalCase(Experiment):
 
         y_verified = self.verify(y_pred, keep_obfuscated=True)
         self.printReports(self.y_obf, y_verified,
-                          m_params["lime_cat_obf"], m_params["lime_cat_confusion_obf"])
+                          m_params["lime_cat_obf"], m_params["lime_cat_confusion_obf"], keepObfuscated=True)
         self.notifier.upload([m_params["lime_cat_confusion_obf"]], "LIME (Fully Categorical) case")
         logger.info(self.verifier.verify.cache_info())
 

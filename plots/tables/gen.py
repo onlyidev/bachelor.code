@@ -43,23 +43,43 @@ def report_to_df_3d(data):
     return pd.DataFrame(
         lst, columns=("Klasė", "Preciziškumas", "Atkūrimas", "F1")
     )
+    
+#%% Accuracy collector
+def to_camel_case(snake_str):
+    return "".join(x.capitalize() for x in snake_str.lower().split("_"))
+class AccCollector:
+    def __init__(self):
+        self.acc = {}
+
+    def add(self, name, acc):
+        self.acc[name] = acc
+
+    def print(self):
+        for name, acc in self.acc.items():
+            print(f"Acc {name}: {round(acc, 3)}")
+
+    def latex(self):
+        return ["\\def\\acc{0}{{\\num{{{1}}}}}".format(to_camel_case(name), round(acc, 3)) for name, acc in self.acc.items()]
+            
+acc = AccCollector()
 #%% 2x2
-names = {"normal": "normal", "lime": "synthesis", "lime_cat": "lime"}
+names = {"normal": "normal_2x2", "lime": "synthesis_2x2", "lime_cat": "lime_2x2"}
 reports = [(name, f"../../metrics/{name}.json") for name in names.keys()]
 for name, report in reports:
     data = json.load(open(report, "r", encoding="utf-8"))
     df = report_to_df_2d(data)
-    acc = data["accuracy"]
-    print(f"Acc {names[name]}: {acc}")
-    df.to_csv(f"{names[name]}_2x2.csv", index=False, float_format="%.3f")
+    acc.add(name, data["accuracy"])
+    df.to_csv(f"{names[name]}.csv", index=False, float_format="%.3f")
     
 #%% 3x3
-names = {"lime_obf": "synthesis", "lime_cat_obf": "lime"}
+names = {"lime_obf": "synthesis_3x3", "lime_cat_obf": "lime_3x3"}
 reports = [(name, f"../../metrics/{name}.json") for name in names.keys()]
 for name, report in reports:
     data = json.load(open(report, "r", encoding="utf-8"))
     df = report_to_df_3d(data)
-    acc = data["accuracy"]
-    print(f"Acc {names[name]}: {acc}")
-    df.to_csv(f"{names[name]}_3x3.csv", index=False, float_format="%.3f")
+    acc.add(name, data["accuracy"])
+    df.to_csv(f"{names[name]}.csv", index=False, float_format="%.3f")
 # %%
+acc.print()
+with open("acc.tex", "w") as f:
+    f.writelines([f"{str}\n" for str in acc.latex()])

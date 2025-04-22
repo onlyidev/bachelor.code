@@ -43,8 +43,8 @@ def plot_confusion_matrix(
     )
 
     plt.title(title)
-    plt.xlabel("Tikra klasė")
-    plt.ylabel("Prognozuojama klasė")
+    plt.ylabel("Tikra klasė")
+    plt.xlabel("Prognozuojama klasė")
     plt.tight_layout()
 
 
