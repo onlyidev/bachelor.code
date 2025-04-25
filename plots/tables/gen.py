@@ -59,11 +59,11 @@ class AccCollector:
             print(f"Acc {name}: {round(acc, 3)}")
 
     def latex(self):
-        return ["\\def\\acc{0}{{\\num{{{1}}}}}".format(to_camel_case(name), round(acc, 3)) for name, acc in self.acc.items()]
+        return ["\\def\\acc{0}{{{1}}}".format(to_camel_case(name), round(acc, 3)) for name, acc in self.acc.items()]
             
 acc = AccCollector()
 #%% 2x2
-names = {"normal": "normal_2x2", "lime": "synthesis_2x2", "lime_cat": "lime_2x2"}
+names = {"normal": "normal_2x2", "lime": "synthesis_2x2", "lime_cat": "lime_2x2", "mca_equiv": "mca_2x2"}
 reports = [(name, f"../../metrics/{name}.json") for name in names.keys()]
 for name, report in reports:
     data = json.load(open(report, "r", encoding="utf-8"))
@@ -77,6 +77,14 @@ reports = [(name, f"../../metrics/{name}.json") for name in names.keys()]
 for name, report in reports:
     data = json.load(open(report, "r", encoding="utf-8"))
     df = report_to_df_3d(data)
+    acc.add(name, data["accuracy"])
+    df.to_csv(f"{names[name]}.csv", index=False, float_format="%.3f")
+#%% NO ATTACK
+names = {"no_attack_normal": "original_no_attack", "no_attack_mca": "mca_no_attack"}
+reports = [(name, f"../../no_obfuscation/{name}.json") for name in names.keys()]
+for name, report in reports:
+    data = json.load(open(report, "r", encoding="utf-8"))
+    df = report_to_df_2d(data)
     acc.add(name, data["accuracy"])
     df.to_csv(f"{names[name]}.csv", index=False, float_format="%.3f")
 # %%

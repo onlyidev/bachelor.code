@@ -77,6 +77,15 @@ classes = ["Nekenkėjiška", "Kenkėjiška"]
 plot_confusion_matrix(confusion_matrix, classes, unbalanced=True)
 plt.savefig("./synthesis_2x2.png", dpi=300)
 #plt.show()
+# %% 2x2 MCA
+data = json.load(open("../metrics/mca_equiv.json", "r", encoding="utf-8"))
+confusion_matrix = np.array(data["confusion_matrix"])
+
+classes = ["Nekenkėjiška", "Kenkėjiška"]
+
+plot_confusion_matrix(confusion_matrix, classes, unbalanced=True)
+plt.savefig("./mca_2x2.png", dpi=300)
+#plt.show()
 
 # %% 3x3 LIME
 data = json.load(open("../metrics/lime_cat_obf.json", "r", encoding="utf-8"))

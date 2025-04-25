@@ -15,11 +15,11 @@ train:
   mca: data/MCA.csv
   normal_features: data/normal_features.csv
   normal_categorical_features: data/normal_categorical_features.csv
-  name: Layer_increase_higher_LR
-  estimators: 10
+  name: Improved_detector
+  estimators: 100
   head: 1500
   num_features: 200
-  mca_components: 30
+  mca_components: 50
 valid:
   benign: data/valid/ben.npy
   malware: data/valid/mal.npy
